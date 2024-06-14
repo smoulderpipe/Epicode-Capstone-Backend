@@ -33,7 +33,7 @@ public class UserController {
 
     @PutMapping("/api/users/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public User updateUser(@PathVariable int id, @RequestBody @Validated CreateUserRequestBody userRequestBody, BindingResult bindingResult){
+    public User editUser(@PathVariable int id, @RequestBody @Validated CreateUserRequestBody userRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }
@@ -42,7 +42,7 @@ public class UserController {
 
     @DeleteMapping("/api/users/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteUser(@PathVariable int id){
+    public String removeUser(@PathVariable int id){
         return userService.deleteUser(id);
     }
 }
