@@ -25,7 +25,7 @@ public class AuthService {
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {
             return jwtTool.createToken(user);
         } else {
-            throw new UnauthorizedException("Si è verificato un errore durante il processo di autenticazione, riprovare");
+            throw new UnauthorizedException("An error occurred during authentication process, check your credentials and try again.");
         }
     }
 }

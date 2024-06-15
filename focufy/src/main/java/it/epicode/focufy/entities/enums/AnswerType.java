@@ -1,16 +1,16 @@
 package it.epicode.focufy.entities.enums;
 
 public enum AnswerType {
-    LEONE,
-    ORSO,
-    DELFINO,
-    LUPO,
-    ESTROSO,
-    DOMESTICO,
-    TATTICO,
-    INGORDO,
-    TEMPO_GIORNI,
-    TEMPO_SETTIMANE,
-    TEMPO_MESI,
-    TESTO_LIBERO
+    LION,
+    BEAR,
+    DOLPHIN,
+    WOLF,
+    WHIMSICAL,
+    TENACIOUS,
+    TACTICAL,
+    GREEDY,
+    TIME_DAYS,
+    TIME_WEEKS,
+    TIME_MONTHS,
+    OPEN_ANSWER
 }

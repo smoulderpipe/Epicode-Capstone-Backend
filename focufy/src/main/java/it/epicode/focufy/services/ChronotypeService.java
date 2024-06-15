@@ -1,6 +1,7 @@
 package it.epicode.focufy.services;
 import it.epicode.focufy.dtos.CreateOrEditChronotypeRequestBody;
 import it.epicode.focufy.entities.Chronotype;
+import it.epicode.focufy.entities.enums.MaxEnergyType;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.repositories.ChronotypeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +28,57 @@ public class ChronotypeService {
         Chronotype chronotypeToSave = new Chronotype();
         chronotypeToSave.setChronotypeType(chronotypeRequestBody.getChronotypeType());
         chronotypeToSave.setDescription(chronotypeRequestBody.getDescription());
+
+        switch (chronotypeRequestBody.getChronotypeType()) {
+            case LION:
+                chronotypeToSave.setMaxEnergyType(MaxEnergyType.MORNING);
+                break;
+            case BEAR:
+                chronotypeToSave.setMaxEnergyType(MaxEnergyType.AFTERNOON);
+                break;
+            case DOLPHIN:
+                chronotypeToSave.setMaxEnergyType(MaxEnergyType.EVENING);
+                break;
+            case WOLF:
+                chronotypeToSave.setMaxEnergyType(MaxEnergyType.NIGHT);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown chronotype type: " + chronotypeRequestBody.getChronotypeType());
+        }
+
         chronotypeRepo.save(chronotypeToSave);
         return "Chronotype with id=" + chronotypeToSave.getId() + " correctly saved";
     }
 
     public Chronotype updateChronotype(int id, CreateOrEditChronotypeRequestBody chronotypeRequestBody) {
         Optional<Chronotype> chronotypeOptional = getChronotypeById(id);
-        if(chronotypeOptional.isPresent()){
+        if (chronotypeOptional.isPresent()) {
             Chronotype chronotypeToUpdate = chronotypeOptional.get();
+
+            if (chronotypeRequestBody.getChronotypeType() == null) {
+                throw new IllegalArgumentException("Chronotype type cannot be null.");
+            }
+
             chronotypeToUpdate.setChronotypeType(chronotypeRequestBody.getChronotypeType());
             chronotypeToUpdate.setDescription(chronotypeRequestBody.getDescription());
+
+            switch (chronotypeRequestBody.getChronotypeType()) {
+                case LION:
+                    chronotypeToUpdate.setMaxEnergyType(MaxEnergyType.MORNING);
+                    break;
+                case BEAR:
+                    chronotypeToUpdate.setMaxEnergyType(MaxEnergyType.AFTERNOON);
+                    break;
+                case DOLPHIN:
+                    chronotypeToUpdate.setMaxEnergyType(MaxEnergyType.EVENING);
+                    break;
+                case WOLF:
+                    chronotypeToUpdate.setMaxEnergyType(MaxEnergyType.NIGHT);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown chronotype type: " + chronotypeRequestBody.getChronotypeType());
+            }
+
             return chronotypeRepo.save(chronotypeToUpdate);
         } else {
             throw new NotFoundException("Chronotype with id=" + id + " not found");

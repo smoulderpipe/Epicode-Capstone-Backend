@@ -12,4 +12,5 @@ public class CreateOrEditTemperRequestBody {
 
     @NotEmpty
     private String description;
+
 }

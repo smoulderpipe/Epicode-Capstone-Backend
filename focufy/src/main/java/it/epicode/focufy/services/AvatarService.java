@@ -27,6 +27,12 @@ public class AvatarService {
     @Autowired
     private AvatarRepo avatarRepo;
 
+    @Autowired
+    private ChronotypeRepo chronotypeRepo;
+
+    @Autowired
+    private TemperRepo temperRepo;
+
     public Page<Avatar> getAllAvatars(int page, int size, String sortBy){
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return avatarRepo.findAll(pageable);
@@ -38,19 +44,25 @@ public class AvatarService {
 
     public void assignAvatarToUser(int userId){
         User user = userRepo.findById(userId)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow( ()-> new RuntimeException("User not found"));
 
         List<Answer> answers = answerRepo.findByUserId(userId);
 
         ChronotypeType chronotypeType = determineChronotype(answers);
         TemperType temperType = determineTemper(answers);
 
+        Chronotype chronotypeToAssign = chronotypeRepo.findByChronotypeType(chronotypeType)
+                .orElseThrow(() -> new RuntimeException("Chronotype not found"));
+
+        Temper temperToAssign = temperRepo.findByTemperType(temperType)
+                .orElseThrow(() -> new RuntimeException("Temper not found"));
+
         Avatar avatar = new Avatar();
-        avatar.setChronotype(new Chronotype(chronotypeType));
-        avatar.setTemper(new Temper(temperType));
+        avatar.setChronotype(chronotypeToAssign);
+        avatar.setTemper(temperToAssign);
         avatar.setImage(generateAvatarImage(chronotypeType, temperType));
         avatar.setDescription(generateAvatarDescription(chronotypeType, temperType));
-
+        avatar.setUser(user);
         avatarRepo.save(avatar);
 
         user.setAvatar(avatar);
@@ -60,7 +72,7 @@ public class AvatarService {
 
     private ChronotypeType determineChronotype(List<Answer> answers){
         Map<ChronotypeType, Integer> chronotypeCounts = answers.stream()
-                .filter(answer -> answer.getQuestion().getQuestionType() == QuestionType.CRONOTIPO)
+                .filter(answer -> answer.getQuestion().getQuestionType() == QuestionType.CHRONOTYPE)
                 .collect(Collectors.groupingBy(answer -> ChronotypeType.valueOf(answer.getAnswerType().name()), Collectors.summingInt(e -> 1)));
 
         return chronotypeCounts.entrySet().stream()
@@ -71,7 +83,7 @@ public class AvatarService {
 
     private TemperType determineTemper(List<Answer> answers) {
         Map<TemperType, Integer> temperCounts = answers.stream()
-                .filter(answer -> answer.getQuestion().getQuestionType() == QuestionType.TEMPERAMENTO)
+                .filter(answer -> answer.getQuestion().getQuestionType() == QuestionType.TEMPER)
                 .collect(Collectors.groupingBy(answer -> TemperType.valueOf(answer.getAnswerType().name()), Collectors.summingInt(e -> 1)));
 
         return temperCounts.entrySet().stream()
@@ -88,7 +100,3 @@ public class AvatarService {
         return "Avatar with chronotype " + chronotype.name() + " and temper " + temper.name();
     }
 }
-
-//Filtra le risposte dell'utente per ottenere solo quelle relative al temperamento.
-//Raggruppa queste risposte per tipo di temperamento e conta quante risposte ci sono per ogni tipo.
-//Trova il tipo di temperamento con il conteggio maggiore e lo ritorna.
