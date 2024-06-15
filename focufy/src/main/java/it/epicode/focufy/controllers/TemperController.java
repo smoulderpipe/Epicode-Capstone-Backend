@@ -1,5 +1,5 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditTemperRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditTemper;
 import it.epicode.focufy.entities.Temper;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -29,7 +29,7 @@ public class TemperController {
     }
 
     @PostMapping("/api/tempers")
-    public ResponseEntity<?> registerTemper(@RequestBody @Validated CreateOrEditTemperRequestBody temperRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> registerTemper(@RequestBody @Validated CreateOrEditTemper temperRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }
@@ -38,7 +38,7 @@ public class TemperController {
     }
 
     @PutMapping("/api/tempers/{id}")
-    public ResponseEntity<?> editTemper(@PathVariable int id, @RequestBody @Validated CreateOrEditTemperRequestBody temperRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> editTemper(@PathVariable int id, @RequestBody @Validated CreateOrEditTemper temperRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }

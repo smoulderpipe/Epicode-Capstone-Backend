@@ -1,5 +1,5 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditQuestionRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditQuestion;
 import it.epicode.focufy.entities.Question;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -31,7 +31,7 @@ public class QuestionController {
     }
 
     @PostMapping("/api/questions")
-    public ResponseEntity<?> registerQuestion(@RequestBody @Validated CreateOrEditQuestionRequestBody questionRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> registerQuestion(@RequestBody @Validated CreateOrEditQuestion questionRequestBody, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
@@ -41,7 +41,7 @@ public class QuestionController {
     }
 
     @PutMapping("/api/questions/{id}")
-    public ResponseEntity<?> editQuestion(@PathVariable int id, @RequestBody CreateOrEditQuestionRequestBody questionRequestBody, BindingResult bindingResult) {
+    public ResponseEntity<?> editQuestion(@PathVariable int id, @RequestBody CreateOrEditQuestion questionRequestBody, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }

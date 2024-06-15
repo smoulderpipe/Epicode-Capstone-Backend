@@ -4,7 +4,7 @@ import it.epicode.focufy.entities.Temper;
 import lombok.Data;
 
 @Data
-public class CreateOrEditAvatarRequestBody {
+public class CreateOrEditAvatar {
     private Chronotype chronotype;
 
     private Temper temper;

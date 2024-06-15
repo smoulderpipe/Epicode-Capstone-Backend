@@ -1,12 +1,9 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditAnswerRequestBody;
-import it.epicode.focufy.dtos.CreateOrEditQuestionRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditAnswer;
 import it.epicode.focufy.entities.Answer;
-import it.epicode.focufy.entities.Question;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.services.AnswerService;
-import it.epicode.focufy.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +31,7 @@ public class AnswerController {
     }
 
     @PostMapping("/api/answers")
-    public ResponseEntity<?> registerAnswer(@RequestBody @Validated CreateOrEditAnswerRequestBody answerRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> registerAnswer(@RequestBody @Validated CreateOrEditAnswer answerRequestBody, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
@@ -44,7 +41,7 @@ public class AnswerController {
     }
 
     @PutMapping("/api/answers/{id}")
-    public ResponseEntity<?> editAnswer(@PathVariable int id, @RequestBody CreateOrEditAnswerRequestBody answerRequestBody, BindingResult bindingResult) {
+    public ResponseEntity<?> editAnswer(@PathVariable int id, @RequestBody CreateOrEditAnswer answerRequestBody, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }

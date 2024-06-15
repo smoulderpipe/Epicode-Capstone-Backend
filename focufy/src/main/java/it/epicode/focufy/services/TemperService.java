@@ -1,7 +1,6 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditTemperRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditTemper;
 import it.epicode.focufy.entities.Temper;
-import it.epicode.focufy.entities.enums.MaxEnergyType;
 import it.epicode.focufy.entities.enums.RiskType;
 import it.epicode.focufy.entities.enums.StrengthType;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -25,7 +24,7 @@ public class TemperService {
         return temperRepo.findById(id);
     }
 
-    public String saveTemper(CreateOrEditTemperRequestBody temperRequestBody){
+    public String saveTemper(CreateOrEditTemper temperRequestBody){
         Temper temperToSave = new Temper(temperRequestBody.getTemperType());
         temperToSave.setDescription(temperRequestBody.getDescription());
         switch (temperRequestBody.getTemperType()) {
@@ -52,7 +51,7 @@ public class TemperService {
         return "Temper with id=" + temperToSave.getId() + " correctly saved";
     }
 
-    public Temper updateTemper(int id, CreateOrEditTemperRequestBody temperRequestBody) {
+    public Temper updateTemper(int id, CreateOrEditTemper temperRequestBody) {
         Optional<Temper> temperOptional = getTemperById(id);
         if(temperOptional.isPresent()){
             Temper temperToUpdate = temperOptional.get();

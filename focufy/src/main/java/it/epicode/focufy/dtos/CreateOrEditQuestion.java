@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CreateOrEditQuestionRequestBody {
+public class CreateOrEditQuestion {
 
     @NotEmpty
     private String questionText;

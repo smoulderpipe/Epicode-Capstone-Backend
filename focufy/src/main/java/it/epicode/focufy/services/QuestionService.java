@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditQuestionRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditQuestion;
 import it.epicode.focufy.entities.Question;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.repositories.QuestionRepo;
@@ -26,7 +26,7 @@ public class QuestionService {
         return questionRepo.findById(id);
     }
 
-    public String saveQuestion(CreateOrEditQuestionRequestBody questionRequestBody){
+    public String saveQuestion(CreateOrEditQuestion questionRequestBody){
         Question questionToSave = new Question();
         questionToSave.setQuestionType(questionRequestBody.getQuestionType());
         questionToSave.setQuestionText(questionRequestBody.getQuestionText());
@@ -34,7 +34,7 @@ public class QuestionService {
         return "Question with id=" + questionToSave.getId() + " correctly saved.";
     }
 
-    public Question updateQuestion(int id, CreateOrEditQuestionRequestBody questionRequestBody){
+    public Question updateQuestion(int id, CreateOrEditQuestion questionRequestBody){
         Optional<Question> questionOptional = getQuestionById(id);
         if(questionOptional.isPresent()){
             Question questionToUpdate = questionOptional.get();

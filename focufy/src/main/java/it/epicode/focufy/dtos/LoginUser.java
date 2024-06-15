@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LoginUserRequestBody {
+public class LoginUser {
 
     @NotBlank(message="The email cannot be empty")
     @Email(message="The email must be correct")

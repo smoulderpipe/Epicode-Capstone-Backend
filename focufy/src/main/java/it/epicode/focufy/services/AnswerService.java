@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditAnswerRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditAnswer;
 import it.epicode.focufy.entities.Answer;
 import it.epicode.focufy.entities.Question;
 import it.epicode.focufy.entities.User;
@@ -36,7 +36,7 @@ public class AnswerService {
         return answerRepo.findById(id);
     }
 
-    public String saveAnswer(CreateOrEditAnswerRequestBody answerRequestBody){
+    public String saveAnswer(CreateOrEditAnswer answerRequestBody){
         Answer answerToSave = new Answer();
         answerToSave.setAnswerType(answerRequestBody.getAnswerType());
         answerToSave.setAnswerText(answerRequestBody.getAnswerText());
@@ -64,7 +64,7 @@ public class AnswerService {
         return "Answer with id=" + answerToSave.getId() + " correctly saved.";
     }
 
-    public Answer updateAnswer(int id, CreateOrEditAnswerRequestBody answerRequestBody) {
+    public Answer updateAnswer(int id, CreateOrEditAnswer answerRequestBody) {
         Optional<Answer> answerOptional = getAnswerById(id);
         if(answerOptional.isPresent()){
             Answer answerToUpdate = answerOptional.get();

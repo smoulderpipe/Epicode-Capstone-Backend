@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.LoginUserRequestBody;
+import it.epicode.focufy.dtos.LoginUser;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.exceptions.UnauthorizedException;
 import it.epicode.focufy.security.JwtTool;
@@ -19,7 +19,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String authenticateUserAndCreateToken(LoginUserRequestBody userRequestBody){
+    public String authenticateUserAndCreateToken(LoginUser userRequestBody){
         User user = userService.getUserByEmail(userRequestBody.getEmail());
 
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {

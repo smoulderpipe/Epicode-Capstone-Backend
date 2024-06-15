@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateUserRequestBody {
+public class CreateOrEditUser {
 
     @NotEmpty(message="The name cannot be empty")
     @Size(min = 3, max = 20, message = "The name must contain between 3 and 20 characters")

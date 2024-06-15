@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditChronotypeRequestBody;
+import it.epicode.focufy.dtos.CreateOrEditChronotype;
 import it.epicode.focufy.entities.Chronotype;
 import it.epicode.focufy.entities.enums.MaxEnergyType;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -24,7 +24,7 @@ public class ChronotypeService {
         return chronotypeRepo.findById(id);
     }
 
-    public String saveChronotype(CreateOrEditChronotypeRequestBody chronotypeRequestBody){
+    public String saveChronotype(CreateOrEditChronotype chronotypeRequestBody){
         Chronotype chronotypeToSave = new Chronotype();
         chronotypeToSave.setChronotypeType(chronotypeRequestBody.getChronotypeType());
         chronotypeToSave.setDescription(chronotypeRequestBody.getDescription());
@@ -50,7 +50,7 @@ public class ChronotypeService {
         return "Chronotype with id=" + chronotypeToSave.getId() + " correctly saved";
     }
 
-    public Chronotype updateChronotype(int id, CreateOrEditChronotypeRequestBody chronotypeRequestBody) {
+    public Chronotype updateChronotype(int id, CreateOrEditChronotype chronotypeRequestBody) {
         Optional<Chronotype> chronotypeOptional = getChronotypeById(id);
         if (chronotypeOptional.isPresent()) {
             Chronotype chronotypeToUpdate = chronotypeOptional.get();
