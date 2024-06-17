@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,7 +61,6 @@ public class AnswerService {
             answerToSave.setUser(userToAssign);
         }
 
-
         answerRepo.save(answerToSave);
         return "Answer with id=" + answerToSave.getId() + " correctly saved.";
     }
@@ -103,5 +104,16 @@ public class AnswerService {
         } else {
             throw new NotFoundException("Answer with id=" + id + " not found");
         }
+    }
+
+    public void saveAll(List<Answer> answers){
+        answerRepo.saveAll(answers);
+    }
+
+    public boolean hasUserCompletedAllQuestions(int id){
+        long totalQuestions = questionRepo.count();
+        long userAnswers = answerRepo.countByUserId(id);
+
+        return totalQuestions == userAnswers;
     }
 }

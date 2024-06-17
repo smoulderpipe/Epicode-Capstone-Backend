@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface AnswerRepo extends JpaRepository<Answer, Integer> {
     List<Answer> findByUserId(int userId);
+    long countByUserId(int userId);
 }

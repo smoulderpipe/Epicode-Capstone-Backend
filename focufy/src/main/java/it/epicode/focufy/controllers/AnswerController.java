@@ -4,6 +4,7 @@ import it.epicode.focufy.entities.Answer;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.services.AnswerService;
+import it.epicode.focufy.services.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +12,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class AnswerController {
 
     @Autowired
     private AnswerService answerService;
+
+    @Autowired
+    private AvatarService avatarService;
 
     @GetMapping("/api/answers")
     public Page<Answer> getAnswers(@RequestParam(defaultValue = "0") int page,
@@ -53,5 +59,21 @@ public class AnswerController {
     public ResponseEntity<?> removeAnswer(@PathVariable int id) {
         String message = answerService.deleteAnswer(id);
         return ResponseEntity.ok().body(message);
+    }
+
+    @PostMapping("/api/answers/submit")
+    public void submitAnswers(@RequestBody List<Answer> answers) {
+        System.out.println("Received answers: " + answers);
+        answers.forEach(answer -> System.out.println(answer.toString()));
+        if (answers.isEmpty()) {
+            throw new BadRequestException("The list of answers cannot be empty.");
+        }
+        answerService.saveAll(answers);
+
+        int userId = answers.get(0).getUser().getId();
+
+        if (answerService.hasUserCompletedAllQuestions(userId)) {
+            avatarService.assignAvatarToUser(userId);
+        }
     }
 }
