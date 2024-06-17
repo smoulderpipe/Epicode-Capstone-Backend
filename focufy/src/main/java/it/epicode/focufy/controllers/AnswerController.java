@@ -1,20 +1,29 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditAnswer;
-import it.epicode.focufy.entities.Answer;
+import it.epicode.focufy.dtos.PersonalAnswerDTO;
+import it.epicode.focufy.dtos.SharedAnswerDTO;
+import it.epicode.focufy.entities.*;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.services.AnswerService;
 import it.epicode.focufy.services.AvatarService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/answers")
 public class AnswerController {
 
     @Autowired
@@ -23,57 +32,115 @@ public class AnswerController {
     @Autowired
     private AvatarService avatarService;
 
-    @GetMapping("/api/answers")
-    public Page<Answer> getAnswers(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "10") int size,
-                                     @RequestParam(defaultValue = "id") String sortBy){
-        return answerService.getAllAnswers(page, size, sortBy);
+    @GetMapping("/shared")
+    public ResponseEntity<Page<SharedAnswer>> getSharedAnswers(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size,
+                                                               @RequestParam(defaultValue = "id") String sortBy) {
+        Page<SharedAnswer> sharedAnswers = answerService.getAllSharedAnswers(page, size, sortBy);
+        return ResponseEntity.ok(sharedAnswers);
     }
 
-    @GetMapping("/api/answers/{id}")
-    public Answer getAnswer(@PathVariable int id) {
-        return answerService.getAnswerById(id)
-                .orElseThrow(() -> new NotFoundException("Answer with id=" + id + " not found."));
+    @GetMapping("/personal")
+    public ResponseEntity<Page<PersonalAnswer>> getPersonalAnswers(@RequestParam(defaultValue = "0") int page,
+                                                                   @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(defaultValue = "id") String sortBy) {
+        Page<PersonalAnswer> personalAnswers = answerService.getAllPersonalAnswers(page, size, sortBy);
+        return ResponseEntity.ok(personalAnswers);
     }
 
-    @PostMapping("/api/answers")
-    public ResponseEntity<?> registerAnswer(@RequestBody @Validated CreateOrEditAnswer answerRequestBody, BindingResult bindingResult){
+    @GetMapping("/shared/{id}")
+    public ResponseEntity<SharedAnswer> getSharedAnswerById(@PathVariable int id) {
+        SharedAnswer sharedAnswer = answerService.getSharedAnswerById(id)
+                .orElseThrow(() -> new NotFoundException("Shared answer with id=" + id + " not found."));
+        return ResponseEntity.ok(sharedAnswer);
+    }
 
-        if(bindingResult.hasErrors()){
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
-        }
-        String resultMessage = answerService.saveAnswer(answerRequestBody);
+    @GetMapping("/personal/{id}")
+    public ResponseEntity<PersonalAnswer> getPersonalAnswerById(@PathVariable int id) {
+        PersonalAnswer personalAnswer = answerService.getPersonalAnswerById(id)
+                .orElseThrow(() -> new NotFoundException("Personal answer with id=" + id + " not found."));
+        return ResponseEntity.ok(personalAnswer);
+    }
+
+    @PostMapping("/shared")
+    public ResponseEntity<String> saveSharedAnswer(@RequestBody @Validated SharedAnswerDTO answerRequestBody,
+                                                   BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
+        String resultMessage = answerService.saveSharedAnswer(answerRequestBody);
         return ResponseEntity.ok(resultMessage);
     }
 
-    @PutMapping("/api/answers/{id}")
-    public ResponseEntity<?> editAnswer(@PathVariable int id, @RequestBody CreateOrEditAnswer answerRequestBody, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
-        }
-        Answer updatedAnswer = answerService.updateAnswer(id, answerRequestBody);
+    @PostMapping("/personal")
+    public ResponseEntity<String> savePersonalAnswer(@RequestBody @Validated PersonalAnswerDTO answerRequestBody,
+                                                     BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
+        String resultMessage = answerService.savePersonalAnswer(answerRequestBody);
+        return ResponseEntity.ok(resultMessage);
+    }
+
+    @PutMapping("/shared/{id}")
+    public ResponseEntity<SharedAnswer> updateSharedAnswer(@PathVariable int id,
+                                                           @RequestBody @Validated SharedAnswerDTO answerRequestBody,
+                                                           BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
+        SharedAnswer updatedAnswer = answerService.updateSharedAnswer(id, answerRequestBody);
         return ResponseEntity.ok(updatedAnswer);
     }
 
-    @DeleteMapping("/api/answers/{id}")
-    public ResponseEntity<?> removeAnswer(@PathVariable int id) {
-        String message = answerService.deleteAnswer(id);
-        return ResponseEntity.ok().body(message);
+    @PutMapping("/personal/{id}")
+    public ResponseEntity<PersonalAnswer> updatePersonalAnswer(@PathVariable int id,
+                                                               @RequestBody @Validated PersonalAnswerDTO answerRequestBody,
+                                                               BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
+        PersonalAnswer updatedAnswer = answerService.updatePersonalAnswer(id, answerRequestBody);
+        return ResponseEntity.ok(updatedAnswer);
     }
 
-    @PostMapping("/api/answers/submit")
-    public void submitAnswers(@RequestBody List<Answer> answers) {
-        System.out.println("Received answers: " + answers);
-        answers.forEach(answer -> System.out.println(answer.toString()));
-        if (answers.isEmpty()) {
-            throw new BadRequestException("The list of answers cannot be empty.");
+    @DeleteMapping("/shared/{id}")
+    public ResponseEntity<String> deleteSharedAnswer(@PathVariable int id) {
+        String message = answerService.deleteSharedAnswer(id);
+        return ResponseEntity.ok(message);
+    }
+
+    @DeleteMapping("/personal/{id}")
+    public ResponseEntity<String> deletePersonalAnswer(@PathVariable int id) {
+        String message = answerService.deletePersonalAnswer(id);
+        return ResponseEntity.ok(message);
+    }
+
+    private void validateBindingResult(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce("", (s1, s2) -> s1 + s2));
         }
-        answerService.saveAll(answers);
+    }
 
-        int userId = answers.get(0).getUser().getId();
+    @PutMapping("/shared/{sharedAnswerId}/assign/{userId}")
+    public ResponseEntity<String> assignSharedAnswerToUser(@PathVariable int sharedAnswerId,
+                                                           @PathVariable int userId) {
+        answerService.assignSharedAnswerToUser(sharedAnswerId, userId);
+        return ResponseEntity.ok("Shared answer with id=" + sharedAnswerId + " assigned to user with id=" + userId);
+    }
 
-        if (answerService.hasUserCompletedAllQuestions(userId)) {
-            avatarService.assignAvatarToUser(userId);
+    @PostMapping("/uploadSharedAnswers")
+    public ResponseEntity<?> uploadSharedAnswersFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new BadRequestException("File is empty");
+        }
+
+        try {
+            File tempFile = File.createTempFile("sharedAnswers", ".tmp");
+            FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+                answerService.loadSharedAnswersFromFile(reader);
+                return ResponseEntity.ok("Shared Answers uploaded successfully");
+            } finally {
+                FileUtils.deleteQuietly(tempFile);
+            }
+        } catch (IOException e) {
+            throw new BadRequestException("Failed to process file: " + e.getMessage());
         }
     }
 }

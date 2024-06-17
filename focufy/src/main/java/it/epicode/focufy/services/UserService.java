@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditUser;
+import it.epicode.focufy.dtos.UserDTO;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.entities.enums.UserRole;
 import it.epicode.focufy.exceptions.EmailAlreadyExistsException;
@@ -32,7 +32,7 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-    public String saveUser(CreateOrEditUser userRequestBody){
+    public String saveUser(UserDTO userRequestBody){
 
         if(userRepo.existsByEmail(userRequestBody.getEmail())){
             throw new EmailAlreadyExistsException("Email " + userRequestBody.getEmail() + " is already in use.");
@@ -46,7 +46,7 @@ public class UserService {
         return "User with id=" + userToSave.getId() + " correctly saved.";
     }
 
-    public User updateUser(int id, CreateOrEditUser userRequestBody){
+    public User updateUser(int id, UserDTO userRequestBody){
         Optional<User> userOptional = getUserById(id);
         if(userOptional.isPresent()){
             User userToUpdate = userOptional.get();

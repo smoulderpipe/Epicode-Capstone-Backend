@@ -1,6 +1,6 @@
 package it.epicode.focufy.entities.enums;
 
-public enum AnswerType {
+public enum SharedAnswerType {
     LION,
     BEAR,
     DOLPHIN,
@@ -8,9 +8,5 @@ public enum AnswerType {
     WHIMSICAL,
     TENACIOUS,
     TACTICAL,
-    GREEDY,
-    TIME_DAYS,
-    TIME_WEEKS,
-    TIME_MONTHS,
-    OPEN_ANSWER
+    GREEDY
 }

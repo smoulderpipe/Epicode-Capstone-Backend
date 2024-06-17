@@ -1,5 +1,5 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditUser;
+import it.epicode.focufy.dtos.UserDTO;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -33,7 +33,7 @@ public class UserController {
 
     @PutMapping("/api/users/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public User editUser(@PathVariable int id, @RequestBody @Validated CreateOrEditUser userRequestBody, BindingResult bindingResult){
+    public User editUser(@PathVariable int id, @RequestBody @Validated UserDTO userRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }

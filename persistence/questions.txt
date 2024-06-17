@@ -1,0 +1,12 @@
+Which time do you usually wake up during workdays?,CHRONOTYPE
+Which time do you usually go to sleep during workdays?,CHRONOTYPE
+What’s your favourite beverage in the morning?,CHRONOTYPE
+When do you usually feel energetic the most?,CHRONOTYPE
+What kind of music do you listen to in order to stay focused?,CHRONOTYPE
+How frequently do you take naps?,CHRONOTYPE
+What takes you out of the bed?,TEMPER
+What do you like to do in your free time?,TEMPER
+How do you handle difficult tasks?,TEMPER
+How often do you procrastinate important stuff?,TEMPER
+How much long can you stay focused on one task?,TEMPER
+What do you value the most?,TEMPER

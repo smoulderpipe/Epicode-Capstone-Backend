@@ -23,13 +23,26 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
-    private List<Answer> answers;
+    private List<PersonalAnswer> personalAnswers;
 
-    @OneToOne(mappedBy = "user")
+    @ManyToMany
+    @JoinTable(
+            name = "user_shared_answers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id")
+    )
+    private List<SharedAnswer> sharedAnswers;
+
+    @ManyToOne
+    @JoinColumn(name = "avatar_id")
     private Avatar avatar;
+
+    private String shortTermGoal;
+    private String longTermGoal;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,5 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateOrEditChronotype;
+import it.epicode.focufy.dtos.ChronotypeDTO;
 import it.epicode.focufy.entities.Chronotype;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -29,7 +29,7 @@ public class ChronotypeController {
     }
 
     @PostMapping("/api/chronotypes")
-    public ResponseEntity<?> registerChronotype(@RequestBody @Validated CreateOrEditChronotype chronotypeRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> registerChronotype(@RequestBody @Validated ChronotypeDTO chronotypeRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }
@@ -38,7 +38,7 @@ public class ChronotypeController {
     }
 
     @PutMapping("/api/chronotypes/{id}")
-    public ResponseEntity<?> editChronotype(@PathVariable int id, @RequestBody @Validated CreateOrEditChronotype chronotypeRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> editChronotype(@PathVariable int id, @RequestBody @Validated ChronotypeDTO chronotypeRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }

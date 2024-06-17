@@ -1,5 +1,5 @@
 package it.epicode.focufy.services;
-import it.epicode.focufy.dtos.CreateOrEditTemper;
+import it.epicode.focufy.dtos.TemperDTO;
 import it.epicode.focufy.entities.Temper;
 import it.epicode.focufy.entities.enums.RiskType;
 import it.epicode.focufy.entities.enums.StrengthType;
@@ -24,7 +24,7 @@ public class TemperService {
         return temperRepo.findById(id);
     }
 
-    public String saveTemper(CreateOrEditTemper temperRequestBody){
+    public String saveTemper(TemperDTO temperRequestBody){
         Temper temperToSave = new Temper(temperRequestBody.getTemperType());
         temperToSave.setDescription(temperRequestBody.getDescription());
         switch (temperRequestBody.getTemperType()) {
@@ -51,7 +51,7 @@ public class TemperService {
         return "Temper with id=" + temperToSave.getId() + " correctly saved";
     }
 
-    public Temper updateTemper(int id, CreateOrEditTemper temperRequestBody) {
+    public Temper updateTemper(int id, TemperDTO temperRequestBody) {
         Optional<Temper> temperOptional = getTemperById(id);
         if(temperOptional.isPresent()){
             Temper temperToUpdate = temperOptional.get();
