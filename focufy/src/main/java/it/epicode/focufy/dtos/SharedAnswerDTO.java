@@ -16,5 +16,4 @@ public class SharedAnswerDTO {
     @NotBlank
     private String answerText;
 
-    private Integer userId;
 }

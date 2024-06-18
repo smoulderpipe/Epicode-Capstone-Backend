@@ -6,9 +6,8 @@ import it.epicode.focufy.services.AvatarService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +21,7 @@ public class AvatarController {
     private AvatarService avatarService;
 
     @PostMapping("/api/avatars/upload")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> uploadAvatarsFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             throw new BadRequestException("File is empty");
@@ -40,5 +40,12 @@ public class AvatarController {
         } catch (IOException e) {
             throw new BadRequestException("Failed to process file: " + e.getMessage());
         }
+    }
+
+    @PutMapping("/users/{userId}/remove-avatar")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<String> removeAvatarAssignment(@PathVariable int userId) {
+        avatarService.removeAvatarAssignment(userId);
+        return ResponseEntity.ok("Avatar assignment removed successfully");
     }
 }

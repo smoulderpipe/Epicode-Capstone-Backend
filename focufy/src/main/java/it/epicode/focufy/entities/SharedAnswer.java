@@ -16,7 +16,12 @@ public class SharedAnswer extends Answer{
     @Enumerated(EnumType.STRING)
     private SharedAnswerType sharedAnswerType;
 
-    @ManyToMany(mappedBy = "sharedAnswers")
+    @ManyToMany
+    @JoinTable(
+            name = "user_shared_answers",
+            joinColumns = @JoinColumn(name = "shared_answer_id"),
+            inverseJoinColumns = @JoinColumn(name="user_id")
+    )
     private List<User> users;
 
     public List<User> getUsers() {

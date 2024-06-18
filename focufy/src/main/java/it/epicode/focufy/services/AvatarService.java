@@ -4,12 +4,16 @@ import it.epicode.focufy.entities.enums.ChronotypeType;
 import it.epicode.focufy.entities.enums.QuestionType;
 import it.epicode.focufy.entities.enums.TemperType;
 import it.epicode.focufy.exceptions.BadRequestException;
+import it.epicode.focufy.exceptions.NotFoundException;
+import it.epicode.focufy.exceptions.UnauthorizedException;
 import it.epicode.focufy.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +54,7 @@ public class AvatarService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<SharedAnswer> sharedAnswers = user.getSharedAnswers(); // Utilizza la relazione diretta
+        List<SharedAnswer> sharedAnswers = user.getSharedAnswers();
 
         ChronotypeType chronotypeType = determineChronotype(sharedAnswers);
         TemperType temperType = determineTemper(sharedAnswers);
@@ -73,6 +77,12 @@ public class AvatarService {
             user.setAvatar(avatar);
             userRepo.save(user);
         }
+    }
+
+    public boolean isAvatarAssigned(int userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found"));
+        return user.getAvatar() != null;
     }
 
     private ChronotypeType determineChronotype(List<SharedAnswer> sharedAnswers) {
@@ -130,6 +140,21 @@ public class AvatarService {
 
             avatarRepo.save(avatar);
         }
+    }
+
+    public void removeAvatarAssignment(int userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        if (authenticatedUserId != userId) {
+            throw new UnauthorizedException("You are not allowed to remove avatar assignment for another user.");
+        }
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
+
+        user.setAvatar(null);
+        userRepo.save(user);
     }
 
 }

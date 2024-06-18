@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="012aae77-31ce-4e10-a960-35257932921a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/controllers/AnswerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/controllers/AnswerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/dtos/CreateOrEditAnswer.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/dtos/CreateOrEditAnswer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/Avatar.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/Avatar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/enums/AnswerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/entities/enums/AnswerType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/repositories/AnswerRepo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/repositories/AvatarRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/repositories/AvatarRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AnswerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AnswerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AvatarService.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AvatarService.java" afterDir="false" />
-    </list>
+    <list default="true" id="012aae77-31ce-4e10-a960-35257932921a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

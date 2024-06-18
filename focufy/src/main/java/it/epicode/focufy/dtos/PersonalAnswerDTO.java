@@ -12,6 +12,7 @@ public class PersonalAnswerDTO {
     @NotBlank
     private String answerText;
 
+    @NotNull
     private Integer userId;
 
     private int timeDays;

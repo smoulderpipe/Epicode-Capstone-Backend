@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,21 +28,15 @@ public class User implements UserDetails {
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
-    private List<PersonalAnswer> personalAnswers;
+    private List<PersonalAnswer> personalAnswers = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_shared_answers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "answer_id")
-    )
-    private List<SharedAnswer> sharedAnswers;
+    @ManyToMany(mappedBy = "users")
+    private List<SharedAnswer> sharedAnswers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "avatar_id")
     private Avatar avatar;
 
-    private String shortTermGoal;
     private String longTermGoal;
 
     @Override

@@ -1,6 +1,6 @@
 package it.epicode.focufy.controllers;
 
-import it.epicode.focufy.dtos.UserDTO;
+import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.dtos.LoginUserDTO;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.services.AuthService;
@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<?> register(@RequestBody @Validated UserDTO userRequestBody, BindingResult bindingResult){
+    public ResponseEntity<?> register(@RequestBody @Validated CreateUserDTO userRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream()
                     .map(objectError -> objectError.getDefaultMessage()).reduce("", (s, s2) -> s+s2));
