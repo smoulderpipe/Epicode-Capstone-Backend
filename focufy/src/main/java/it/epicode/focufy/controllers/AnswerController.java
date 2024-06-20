@@ -4,6 +4,7 @@ import it.epicode.focufy.dtos.SharedAnswerDTO;
 import it.epicode.focufy.entities.*;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
+import it.epicode.focufy.exceptions.UnauthorizedException;
 import it.epicode.focufy.repositories.SharedAnswerRepo;
 import it.epicode.focufy.services.AnswerService;
 import it.epicode.focufy.services.AvatarService;
@@ -19,7 +20,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -71,6 +71,13 @@ public class AnswerController {
         PersonalAnswer personalAnswer = answerService.getPersonalAnswerById(id)
                 .orElseThrow(() -> new NotFoundException("Personal answer with id=" + id + " not found."));
         return ResponseEntity.ok(personalAnswer);
+    }
+
+    @GetMapping("/question/{questionId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<List<SharedAnswer>> getAnswersForQuestion(@PathVariable int questionId) {
+        List<SharedAnswer> answers = answerService.getSharedAnswersForQuestion(questionId);
+        return ResponseEntity.ok(answers);
     }
 
     @PostMapping("/shared")
@@ -174,11 +181,18 @@ public class AnswerController {
         return ResponseEntity.ok(personalAnswers);
     }
 
-    @PostMapping("/personal")
+    @PostMapping("/users/{userId}/personal")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<String> savePersonalAnswer(@RequestBody @Validated PersonalAnswerDTO answerRequestBody,
+    public ResponseEntity<String> savePersonalAnswer(@PathVariable int userId, @RequestBody @Validated PersonalAnswerDTO answerRequestBody,
                                                      BindingResult bindingResult) {
         validateBindingResult(bindingResult);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        if (authenticatedUserId != userId) {
+            throw new UnauthorizedException("You are not allowed to save a personal answer for another user.");
+        }
+        answerRequestBody.setUserId(userId);
         String resultMessage = answerService.savePersonalAnswer(answerRequestBody);
         return ResponseEntity.ok(resultMessage);
     }
@@ -186,6 +200,11 @@ public class AnswerController {
     @DeleteMapping("/user/shared/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<String> clearUserSharedAnswers(@PathVariable int userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+        if (authenticatedUserId != userId) {
+            throw new BadRequestException("You are not allowed to clear another user's personal answers.");
+        }
         answerService.clearUserSharedAnswers(userId);
         return ResponseEntity.ok("User's shared answers cleared successfully");
     }

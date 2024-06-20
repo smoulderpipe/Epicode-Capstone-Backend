@@ -1,6 +1,7 @@
 package it.epicode.focufy.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.epicode.focufy.entities.enums.PersonalAnswerType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,9 +17,7 @@ public class PersonalAnswer extends Answer {
     @JsonIgnore
     private User user;
 
-    private int timeDays;
-    private String shortTermGoal;
-    private String longTermGoal;
-    private int satisfaction;
-    private boolean restart;
+    @Enumerated(EnumType.STRING)
+    private PersonalAnswerType personalAnswerType;
+
 }

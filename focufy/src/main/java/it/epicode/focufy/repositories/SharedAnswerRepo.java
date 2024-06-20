@@ -6,4 +6,5 @@ import java.util.List;
 public interface SharedAnswerRepo extends JpaRepository<SharedAnswer, Integer> {
     long countByUsers_Id(int userId);
     List<SharedAnswer> findByUsers_Id(int userId);
+    List<SharedAnswer> findByQuestionId(int questionId);
 }

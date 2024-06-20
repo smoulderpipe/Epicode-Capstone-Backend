@@ -1,5 +1,5 @@
 package it.epicode.focufy.dtos;
-import jakarta.validation.constraints.NotBlank;
+import it.epicode.focufy.entities.enums.PersonalAnswerType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -9,20 +9,12 @@ public class PersonalAnswerDTO {
     @NotNull
     private Integer questionId;
 
-    @NotBlank
+    @NotEmpty
     private String answerText;
 
-    @NotNull
     private Integer userId;
 
-    private int timeDays;
-
-    private String shortTermGoal;
-
-    private String longTermGoal;
-
-    private int satisfaction;
-
-    private boolean restart;
+    @NotNull
+    private PersonalAnswerType personalAnswerType;
 
 }

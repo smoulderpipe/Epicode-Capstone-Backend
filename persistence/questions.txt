@@ -10,3 +10,8 @@ How do you handle difficult tasks?,TEMPER
 How often do you procrastinate important stuff?,TEMPER
 How much long can you stay focused on one task?,TEMPER
 What do you value the most?,TEMPER
+What's your long term goal?,GOALS
+What's the goal of the study plan you want to set?,GOALS
+How many days are available to achieve it?,GOALS
+How satisfied are you with your recent performance?,GOALS
+Do you wish to reset your profile and repeat the avatar assignment test?,RESULTS

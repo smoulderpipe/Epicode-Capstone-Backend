@@ -2,6 +2,7 @@ package it.epicode.focufy.services;
 import it.epicode.focufy.dtos.PersonalAnswerDTO;
 import it.epicode.focufy.dtos.SharedAnswerDTO;
 import it.epicode.focufy.entities.*;
+import it.epicode.focufy.entities.enums.PersonalAnswerType;
 import it.epicode.focufy.entities.enums.QuestionType;
 import it.epicode.focufy.entities.enums.SharedAnswerType;
 import it.epicode.focufy.exceptions.BadRequestException;
@@ -58,6 +59,10 @@ public class AnswerService {
         return sharedAnswerRepo.findById(id);
     }
 
+    public List<SharedAnswer> getSharedAnswersForQuestion(int questionId){
+        return sharedAnswerRepo.findByQuestionId(questionId);
+    }
+
     public Page<SharedAnswer> getOwnSharedAnswers(int userId, int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         List<SharedAnswer> userSharedAnswers = sharedAnswerRepo.findByUsers_Id(userId);
@@ -75,23 +80,27 @@ public class AnswerService {
         Page<PersonalAnswer> personalAnswerPage = new PageImpl<>(userPersonalAnswers.subList(start, end), pageable, userPersonalAnswers.size());
         return personalAnswerPage;
     }
-    public String savePersonalAnswer(PersonalAnswerDTO answerRequestBody) {
-        PersonalAnswer answerToSave = new PersonalAnswer();
-        populatePersonalAnswerFields(answerToSave, answerRequestBody);
+    public String savePersonalAnswer(PersonalAnswerDTO personalAnswerDTO) {
+        User user = userRepo.findById(personalAnswerDTO.getUserId())
+                .orElseThrow(() -> new NotFoundException("User with id=" + personalAnswerDTO.getUserId() + " not found."));
 
-        User user = userRepo.findById(answerRequestBody.getUserId())
-                .orElseThrow(() ->
-                        new NotFoundException("User with id=" + answerRequestBody.getUserId() + " not found"));
-            answerToSave.setUser(user);
+        PersonalAnswer personalAnswer = new PersonalAnswer();
+        populatePersonalAnswerFields(personalAnswer, personalAnswerDTO, user);
 
-            if (user.getPersonalAnswers() == null) {
-                user.setPersonalAnswers(new ArrayList<>());
-            }
-            user.getPersonalAnswers().add(answerToSave);
+        if (user.getPersonalAnswers() == null) {
+            user.setPersonalAnswers(new ArrayList<>());
+        }
+        user.getPersonalAnswers().add(personalAnswer);
 
+        personalAnswerRepo.save(personalAnswer);
 
-        personalAnswerRepo.save(answerToSave);
-        return "PersonalAnswer with id=" + answerToSave.getId() + " correctly saved for user with id=" + answerRequestBody.getUserId();
+        if (personalAnswerDTO.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
+            clearUserPersonalAnswers(user.getId());
+            clearUserSharedAnswers(user.getId());
+            avatarService.removeAvatarAssignment(user.getId());
+        }
+
+        return "Personal answer saved successfully.";
     }
 
     public String saveSharedAnswer(SharedAnswerDTO answerRequestBody) {
@@ -101,19 +110,14 @@ public class AnswerService {
         return "SharedAnswer with id=" + answerToSave.getId() + " correctly saved.";
     }
 
-    private void populatePersonalAnswerFields(PersonalAnswer answerToSave, PersonalAnswerDTO answerRequestBody) {
-        answerToSave.setAnswerText(answerRequestBody.getAnswerText());
-        answerToSave.setTimeDays(answerRequestBody.getTimeDays());
-        answerToSave.setShortTermGoal(answerRequestBody.getShortTermGoal());
-        answerToSave.setLongTermGoal(answerRequestBody.getLongTermGoal());
-        answerToSave.setSatisfaction(answerRequestBody.getSatisfaction());
-        answerToSave.setRestart(answerRequestBody.isRestart());
+    private void populatePersonalAnswerFields(PersonalAnswer personalAnswer, PersonalAnswerDTO personalAnswerDTO, User user) {
+        personalAnswer.setUser(user);
+        personalAnswer.setPersonalAnswerType(personalAnswerDTO.getPersonalAnswerType());
+        personalAnswer.setAnswerText(personalAnswerDTO.getAnswerText());
 
-        Optional<Question> questionOptional = questionRepo.findById(answerRequestBody.getQuestionId());
-        if (!questionOptional.isPresent()) {
-            throw new NotFoundException("Question with id=" + answerRequestBody.getQuestionId() + " not found.");
-        }
-        answerToSave.setQuestion(questionOptional.get());
+        Question question = questionRepo.findById(personalAnswerDTO.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("Question with id=" + personalAnswerDTO.getQuestionId() + " not found."));
+        personalAnswer.setQuestion(question);
     }
 
     private void populateSharedAnswerFields(SharedAnswer answerToSave, SharedAnswerDTO answerRequestBody) {
@@ -125,21 +129,6 @@ public class AnswerService {
             throw new NotFoundException("Question with id=" + answerRequestBody.getQuestionId() + " not found.");
         }
         answerToSave.setQuestion(questionOptional.get());
-    }
-
-    public void assignPersonalAnswerToUser(int userId, PersonalAnswer personalAnswer) {
-        Optional<User> userOptional = userRepo.findById(userId);
-        if (!userOptional.isPresent()) {
-            throw new NotFoundException("User with id=" + userId + " not found");
-        }
-        User userToAssign = userOptional.get();
-        personalAnswer.setUser(userToAssign);
-        if (userToAssign.getPersonalAnswers() == null) {
-            userToAssign.setPersonalAnswers(new ArrayList<>());
-        }
-        userToAssign.getPersonalAnswers().add(personalAnswer);
-        personalAnswerRepo.save(personalAnswer);
-        userRepo.save(userToAssign);
     }
 
     public void assignSharedAnswerToUser(int sharedAnswerId, int userId) {
@@ -164,10 +153,12 @@ public class AnswerService {
     }
 
     public PersonalAnswer updatePersonalAnswer(int id, PersonalAnswerDTO answerRequestBody) {
+        User user = userRepo.findById(answerRequestBody.getUserId())
+                .orElseThrow(() -> new NotFoundException("User with id=" + answerRequestBody.getUserId() + " not found."));
         Optional<PersonalAnswer> answerOptional = getPersonalAnswerById(id);
         if (answerOptional.isPresent()) {
             PersonalAnswer answerToUpdate = answerOptional.get();
-            populatePersonalAnswerFields(answerToUpdate, answerRequestBody);
+            populatePersonalAnswerFields(answerToUpdate, answerRequestBody, user);
             return personalAnswerRepo.save(answerToUpdate);
         } else {
             throw new NotFoundException("PersonalAnswer with id=" + id + " not found");
@@ -260,7 +251,31 @@ public class AnswerService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
 
+        List<SharedAnswer> sharedAnswersToRemove = user.getSharedAnswers();
         user.getSharedAnswers().clear();
+        userRepo.save(user);
+
+        for (SharedAnswer sharedAnswer : sharedAnswersToRemove) {
+            sharedAnswer.getUsers().remove(user);
+            sharedAnswerRepo.save(sharedAnswer);
+        }
+    }
+
+    public void clearUserPersonalAnswers(int userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        if (authenticatedUserId != userId) {
+            throw new UnauthorizedException("You are not allowed to clear shared answers for another user.");
+        }
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
+
+        List<PersonalAnswer> personalAnswers = personalAnswerRepo.findByUserId(userId);
+
+        personalAnswerRepo.deleteAll(personalAnswers);
+
+        user.getPersonalAnswers().clear();
         userRepo.save(user);
     }
 

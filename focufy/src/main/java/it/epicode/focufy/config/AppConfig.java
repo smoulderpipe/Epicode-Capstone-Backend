@@ -12,7 +12,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -22,29 +24,41 @@ public class AppConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.formLogin(http->http.disable());
-        httpSecurity.csrf(http->http.disable());
-        httpSecurity.sessionManagement(http->http.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity.formLogin(http -> http.disable());
+        httpSecurity.csrf(http -> http.disable());
+        httpSecurity.sessionManagement(http -> http.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity.authorizeHttpRequests(http -> http.requestMatchers("/**").permitAll());
         return httpSecurity.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("*"));
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+
+        // Esempio di configurazione esplicita per le origini consentite
+        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+
+        // Esempio di configurazione esplicita per i metodi HTTP consentiti
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // Esempio di configurazione esplicita per gli header consentiti
+        corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        // Esempio di configurazione esplicita per gli header esposti
+        corsConfig.setExposedHeaders(Arrays.asList("Authorization"));
+
+        // Impostazione se i cookie possono essere inviati nella richiesta cross-origin
+        corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        source.registerCorsConfiguration("/**", corsConfig);
 
-        return source;
+        return new CorsFilter(source);
     }
 }

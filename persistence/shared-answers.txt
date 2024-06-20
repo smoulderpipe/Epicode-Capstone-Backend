@@ -19,16 +19,16 @@ Chilled,5,BEAR
 Progressive,5,DOLPHIN
 Silence is golden,5,WOLF
 Never,6,LION
-Sometimes,6,BEAR
-Quite often,6,DOLPHIN
-Always,6,WOLF
-Crazy dreams,7,WHIMSICAL
-My alarm clock,7,TENACIOUS
-The smell of success,7,TACTICAL
-The scent of cookies,7,GREEDY
-Whatever comes to my mind,8,WHIMSICAL
+Monthly,6,BEAR
+Weekly,6,DOLPHIN
+Daily,6,WOLF
+Having new ideas,7,WHIMSICAL
+Knowing I have deadlines,7,TENACIOUS
+Wanting to check how my plans are working,7,TACTICAL
+Wanting to get back at my work,7,GREEDY
+Whatever I'm in the mood for,8,WHIMSICAL
 Something productive,8,TENACIOUS
-It depends on the occasion,8,TACTICAL
+It depends on the context,8,TACTICAL
 Diving into my passion,8,GREEDY
 My instinct will help me to figure it out,9,WHIMSICAL
 Method and common sense,9,TENACIOUS
@@ -37,12 +37,12 @@ Is this a challenge?,9,GREEDY
 Procrastination is motivation,10,WHIMSICAL
 Almost never,10,TENACIOUS
 More than I should,10,TACTICAL
-It depends on whether it's important to me,10,GREEDY
+Never if it's important to me,10,GREEDY
 As long as it's not boring,11,WHIMSICAL
 As long as the task requires,11,TENACIOUS
 Up until it makes sense,11,TACTICAL
 Night and day,11,GREEDY
-Happiness,12,WHIMSICAL
-Peace,12,TENACIOUS
-Freedom,12,TACTICAL
+Freedom,12,WHIMSICAL
+Commitment,12,TENACIOUS
+Clarity,12,TACTICAL
 Greatness,12,GREEDY
