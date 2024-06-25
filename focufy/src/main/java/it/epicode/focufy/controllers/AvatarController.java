@@ -1,7 +1,5 @@
 package it.epicode.focufy.controllers;
-
 import it.epicode.focufy.exceptions.BadRequestException;
-import it.epicode.focufy.repositories.AvatarRepo;
 import it.epicode.focufy.services.AvatarService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,4 +47,5 @@ public class AvatarController {
         avatarService.removeAvatarAssignment(userId);
         return ResponseEntity.ok("Avatar assignment removed successfully");
     }
+
 }

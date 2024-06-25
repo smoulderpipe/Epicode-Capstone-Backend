@@ -11,7 +11,7 @@ public class SharedAnswerDTO {
     @NotNull
     private Integer questionId;
 
-
+    @NotNull
     private SharedAnswerType sharedAnswerType;
 
     @NotBlank

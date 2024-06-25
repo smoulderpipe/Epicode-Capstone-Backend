@@ -168,23 +168,6 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-
-//    @PutMapping("/shared/{sharedAnswerId}/assign/{userId}")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-//    public ResponseEntity<?> assignSharedAnswerToUser(@PathVariable int sharedAnswerId, @PathVariable int userId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
-//
-//        if (authenticatedUserId != userId) {
-//            throw new BadRequestException("You are not allowed to assign the Shared Answer to another user.");
-//        }
-//
-//        SharedAnswer sharedAnswer = sharedAnswerRepo.findById(sharedAnswerId)
-//                .orElseThrow(() -> new NotFoundException("SharedAnswer with id=" + sharedAnswerId + " not found"));
-//        answerService.assignSharedAnswerToUser(sharedAnswerId, userId);
-//        return ResponseEntity.ok("User with id=" + userId + " assigned to Shared Answer with id=" + sharedAnswerId + " successfully");
-//    }
-
     @GetMapping("/users/{userId}/shared")
     @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<Page<SharedAnswer>> getUserSharedAnswers(@PathVariable int userId,
@@ -226,22 +209,6 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
-//    @PostMapping("/users/{userId}/personal")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-//    public ResponseEntity<String> savePersonalAnswer(@PathVariable int userId, @RequestBody @Validated PersonalAnswerDTO answerRequestBody,
-//                                                     BindingResult bindingResult) {
-//        validateBindingResult(bindingResult);
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
-//
-//        if (authenticatedUserId != userId) {
-//            throw new UnauthorizedException("You are not allowed to save a personal answer for another user.");
-//        }
-//        answerRequestBody.setUserId(userId);
-//        String resultMessage = answerService.savePersonalAnswer(answerRequestBody);
-//        return ResponseEntity.ok(resultMessage);
-//    }
 
     @DeleteMapping("/user/shared/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
