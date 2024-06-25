@@ -103,6 +103,29 @@ public class AnswerService {
         return "Personal answer saved successfully.";
     }
 
+    public String savePersonalAnswers(List<PersonalAnswerDTO> personalAnswerDTOs) {
+        for (PersonalAnswerDTO dto : personalAnswerDTOs) {
+            User user = userRepo.findById(dto.getUserId())
+                    .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+
+            PersonalAnswer personalAnswer = new PersonalAnswer();
+            populatePersonalAnswerFields(personalAnswer, dto, user);
+
+            if (user.getPersonalAnswers() == null) {
+                user.setPersonalAnswers(new ArrayList<>());
+            }
+            user.getPersonalAnswers().add(personalAnswer);
+            personalAnswerRepo.save(personalAnswer);
+
+            if (dto.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
+                clearUserPersonalAnswers(user.getId());
+                clearUserSharedAnswers(user.getId());
+                avatarService.removeAvatarAssignment(user.getId());
+            }
+        }
+        return "Personal answers saved successfully.";
+    }
+
     public String saveSharedAnswer(SharedAnswerDTO answerRequestBody) {
         SharedAnswer answerToSave = new SharedAnswer();
         populateSharedAnswerFields(answerToSave, answerRequestBody);
@@ -114,6 +137,7 @@ public class AnswerService {
         personalAnswer.setUser(user);
         personalAnswer.setPersonalAnswerType(personalAnswerDTO.getPersonalAnswerType());
         personalAnswer.setAnswerText(personalAnswerDTO.getAnswerText());
+        personalAnswer.setPersonalAnswerType(personalAnswerDTO.getPersonalAnswerType());
 
         Question question = questionRepo.findById(personalAnswerDTO.getQuestionId())
                 .orElseThrow(() -> new NotFoundException("Question with id=" + personalAnswerDTO.getQuestionId() + " not found."));

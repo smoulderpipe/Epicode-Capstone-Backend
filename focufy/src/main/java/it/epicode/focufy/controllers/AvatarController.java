@@ -42,7 +42,7 @@ public class AvatarController {
         }
     }
 
-    @PutMapping("/users/{userId}/remove-avatar")
+    @PutMapping("/api/users/{userId}/remove-avatar")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<String> removeAvatarAssignment(@PathVariable int userId) {
 

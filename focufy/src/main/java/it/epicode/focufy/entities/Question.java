@@ -1,4 +1,5 @@
 package it.epicode.focufy.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.epicode.focufy.entities.enums.QuestionType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class Question {
     private QuestionType questionType;
 
     @OneToMany(mappedBy = "question")
+    @JsonIgnore
     List<Answer> answers;
 }
