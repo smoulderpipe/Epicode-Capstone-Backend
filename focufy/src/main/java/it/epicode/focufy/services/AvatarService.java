@@ -108,7 +108,72 @@ public class AvatarService {
     }
 
     private String generateAvatarImage(ChronotypeType chronotype, TemperType temper) {
-        return "image/path/" + chronotype.name().toLowerCase() + "_" + temper.name().toLowerCase() + ".png";
+        String imagePath = "";
+        switch(chronotype){
+            case LION:
+                switch(temper){
+                    case WHIMSICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-lion_pvxrie.jpg";
+                        break;
+                    case TENACIOUS:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342909/tenacious-lion_nevq66.jpg";
+                        break;
+                    case TACTICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342906/tactical-lion_h2ixvh.jpg";
+                        break;
+                    case GREEDY:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342903/greedy-lion_gaq8z7.jpg";
+                        break;
+                }
+                break;
+            case BEAR:
+                switch(temper){
+                    case WHIMSICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342910/whimsical-bear_r26140.jpg";
+                        break;
+                    case TENACIOUS:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342907/tenacious-bear_pdyjlm.jpg";
+                        break;
+                    case TACTICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342903/tactical-bear_clc5tp.jpg";
+                        break;
+                    case GREEDY:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342902/greedy-bear_akqyzv.jpg";
+
+                }
+                break;
+            case DOLPHIN:
+                switch (temper){
+                    case WHIMSICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-dolphin_omksbl.jpg";
+                        break;
+                    case TENACIOUS:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342908/tenacious-dolphin_lx16sp.jpg";
+                        break;
+                    case TACTICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342905/tactical-dolphin_jmbeng.jpg";
+                        break;
+                    case GREEDY:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342902/greedy_dolphin_fynk3v.jpg";
+                }
+                break;
+            case WOLF:
+                switch(temper){
+                    case WHIMSICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-dolphin_omksbl.jpg";
+                        break;
+                    case TENACIOUS:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342909/tenacious-wolf_tgykta.jpg";
+                        break;
+                    case TACTICAL:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342907/tactical-wolf_osi14o.jpg";
+                        break;
+                    case GREEDY:
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342904/greedy-wolf_lfgoye.jpg";
+                }
+            break;
+        }
+        return imagePath;
     }
 
     private String generateAvatarDescription(ChronotypeType chronotype, TemperType temper) {

@@ -1,5 +1,6 @@
 package it.epicode.focufy.config;
-
+import com.cloudinary.Cloudinary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -10,12 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -41,24 +41,27 @@ public class AppConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        // Esempio di configurazione esplicita per le origini consentite
         corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-
-        // Esempio di configurazione esplicita per i metodi HTTP consentiti
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Esempio di configurazione esplicita per gli header consentiti
         corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-
-        // Esempio di configurazione esplicita per gli header esposti
         corsConfig.setExposedHeaders(Arrays.asList("Authorization"));
-
-        // Impostazione se i cookie possono essere inviati nella richiesta cross-origin
         corsConfig.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
 
         return new CorsFilter(source);
     }
+
+    @Bean
+    public Cloudinary getCloudinary(@Value("${cloudinary.cloud-name}") String name,
+                                    @Value("${cloudinary.apikey}") String apikey,
+                                    @Value("${cloudinary.api-secret}") String secret){
+        Map<String, String> config = new HashMap<>();
+        config.put("cloud_name", name);
+        config.put("api_key", apikey);
+        config.put("api_secret", secret);
+        return new Cloudinary(config);
+
+    }
+
 }
