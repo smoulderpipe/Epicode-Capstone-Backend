@@ -1,4 +1,5 @@
 package it.epicode.focufy.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.epicode.focufy.entities.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,14 +29,20 @@ public class User implements UserDetails {
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<PersonalAnswer> personalAnswers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<SharedAnswer> sharedAnswers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "avatar_id")
     private Avatar avatar;
+
+    @OneToOne
+    @JsonIgnore
+    private StudyPlan studyPlan;
 
     private String longTermGoal;
 

@@ -25,15 +25,13 @@ public class Avatar {
     private Temper temper;
 
     private String image;
-    private String description;
 
     @ManyToMany(mappedBy = "avatar")
     private Set<User> users = new HashSet<>();
 
-    public Avatar(Chronotype chronotype, Temper temper, String image, String description) {
+    public Avatar(Chronotype chronotype, Temper temper, String image) {
         this.chronotype = chronotype;
         this.temper = temper;
         this.image = image;
-        this.description = description;
     }
 }

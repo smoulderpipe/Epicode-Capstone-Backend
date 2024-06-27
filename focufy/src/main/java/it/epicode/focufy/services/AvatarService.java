@@ -160,7 +160,7 @@ public class AvatarService {
             case WOLF:
                 switch(temper){
                     case WHIMSICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-dolphin_omksbl.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342912/whimsical-wolf_ni8z8d.jpg";
                         break;
                     case TENACIOUS:
                         imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342909/tenacious-wolf_tgykta.jpg";
@@ -174,10 +174,6 @@ public class AvatarService {
             break;
         }
         return imagePath;
-    }
-
-    private String generateAvatarDescription(ChronotypeType chronotype, TemperType temper) {
-        return "Avatar with chronotype " + chronotype.name() + " and temper " + temper.name();
     }
 
     public void loadAvatarsFromFile(BufferedReader reader) throws IOException {
@@ -201,7 +197,6 @@ public class AvatarService {
             avatar.setChronotype(chronotype);
             avatar.setTemper(temper);
             avatar.setImage(generateAvatarImage(chronotypeType, temperType));
-            avatar.setDescription(generateAvatarDescription(chronotypeType, temperType));
 
             avatarRepo.save(avatar);
         }
