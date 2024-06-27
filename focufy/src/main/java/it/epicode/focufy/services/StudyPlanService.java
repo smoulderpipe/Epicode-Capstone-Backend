@@ -1,6 +1,7 @@
 package it.epicode.focufy.services;
 
 import it.epicode.focufy.dtos.StudyPlanDTO;
+import it.epicode.focufy.dtos.StudyPlanResponseDTO;
 import it.epicode.focufy.entities.*;
 import it.epicode.focufy.entities.enums.ActivitySessionType;
 import it.epicode.focufy.entities.enums.ChronotypeType;
@@ -203,4 +204,18 @@ public class StudyPlanService {
             throw new NotFoundException("StudyPlan not found for user with id=" + userId);
         }
     }
+
+    @Transactional(readOnly = true)
+    public StudyPlanResponseDTO getStudyPlanByUserId(int userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
+
+        StudyPlan studyPlan = user.getStudyPlan();
+        if (studyPlan == null) {
+            throw new NotFoundException("Study plan not found for user with id=" + userId);
+        }
+
+        return new StudyPlanResponseDTO(studyPlan);
+    }
+
 }

@@ -12,4 +12,13 @@ public class ActivitySessionDTO {
 
     private int duration;
     private LocalTime startTime;
+    public ActivitySessionDTO(ActivitySessionType activitySessionType, int duration, LocalTime startTime) {
+        this.activitySessionType = activitySessionType;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public ActivitySessionDTO() {
+    }
+
 }

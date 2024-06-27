@@ -18,6 +18,13 @@ public class StudyPlanController {
     @Autowired
     private StudyPlanService studyPlanService;
 
+    @GetMapping("/api/users/{userId}/studyplans")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public ResponseEntity<StudyPlanResponseDTO> getStudyPlanByUserId(@PathVariable int userId){
+        StudyPlanResponseDTO studyPlanDTO = studyPlanService.getStudyPlanByUserId(userId);
+        return new ResponseEntity<>(studyPlanDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/api/users/{userId}/studyplans")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<StudyPlanResponseDTO> createStudyPlan(@PathVariable int userId, @RequestBody @Validated StudyPlanDTO studyPlanDTO) {

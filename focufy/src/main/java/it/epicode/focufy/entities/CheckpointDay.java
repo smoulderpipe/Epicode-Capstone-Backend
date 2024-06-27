@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -11,7 +13,9 @@ import java.util.List;
 @Entity
 public class CheckpointDay extends Day{
 
+    private String type = "CheckpointDay";
+
     @OneToMany
     @JsonIgnore
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<>();
 }

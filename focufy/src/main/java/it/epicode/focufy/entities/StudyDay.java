@@ -15,6 +15,9 @@ import java.util.List;
 @Data
 @Entity
 public class StudyDay extends Day {
+
+    private String type = "StudyDay";
+
     @OneToMany(mappedBy = "studyDay")
     @JsonIgnore
     private List<ActivitySession> activitySessions = new ArrayList<>();

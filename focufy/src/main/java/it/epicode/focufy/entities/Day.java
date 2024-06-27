@@ -19,4 +19,6 @@ public abstract class Day {
    @JsonIgnore
    private StudyPlan studyPlan;
 
+   public abstract String getType();
+
 }
