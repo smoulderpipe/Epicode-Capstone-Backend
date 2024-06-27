@@ -32,11 +32,13 @@ public class StudyPlanController {
     public ResponseEntity<String> addMantrasToStudyPlan(@PathVariable int userId) {
         try {
             studyPlanService.addMantrasToStudyPlanByMantraType(userId);
-            return ResponseEntity.ok("Mantras added to studyplan for user with id " + userId);
+            String jsonResponse = "{\"message\": \"Mantras added to study plan for user with id " + userId + "\"}";
+            return ResponseEntity.ok().body(jsonResponse);
         } catch (NotFoundException e) {
             // Gestisci l'eccezione se l'utente non è trovato
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+
     }
 
     @DeleteMapping("/api/users/{userId}/studyplans")
