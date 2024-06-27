@@ -15,11 +15,6 @@ public abstract class Day {
    private int availableHours;
 
    @ManyToOne
-   @JoinColumn(name = "mantra_id")
-   @JsonIgnore
-   private Mantra mantra;
-
-   @ManyToOne
    @JoinColumn(name = "studyplan_id")
    @JsonIgnore
    private StudyPlan studyPlan;

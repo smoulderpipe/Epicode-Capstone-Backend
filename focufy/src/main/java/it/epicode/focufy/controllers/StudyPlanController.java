@@ -29,9 +29,10 @@ public class StudyPlanController {
 
     @PostMapping("/api/users/{userId}/addMantras")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public void addMantrasToStudyPlan(@PathVariable int userId) {
+    public ResponseEntity<String> addMantrasToStudyPlan(@PathVariable int userId) {
         try {
             studyPlanService.addMantrasToStudyPlanByMantraType(userId);
+            return ResponseEntity.ok("Mantras added to studyplan for user with id " + userId);
         } catch (NotFoundException e) {
             // Gestisci l'eccezione se l'utente non è trovato
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -40,8 +41,8 @@ public class StudyPlanController {
 
     @DeleteMapping("/api/users/{userId}/studyplans")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<Void> deleteStudyPlan(@PathVariable int userId){
+    public ResponseEntity<String> deleteStudyPlan(@PathVariable int userId){
         studyPlanService.deleteStudyPlanByUserId(userId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Study plan for user with id " + userId + " correctly deleted");
     }
 }

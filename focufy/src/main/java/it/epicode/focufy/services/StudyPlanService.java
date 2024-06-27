@@ -50,12 +50,17 @@ public class StudyPlanService {
         studyPlan.setShortTermGoal(studyPlanDTO.getShortTermGoal());
 
         List<Day> days = new ArrayList<>();
-        for (int i = 0; i < studyPlanDTO.getNumberOfDays(); i++) {
+        int numberOfDays = studyPlanDTO.getNumberOfDays();
+        for (int i = 0; i < numberOfDays; i++) {
             Day day;
-            if ((i + 1) % 7 == 0) {
-                day = new CheckpointDay();
-                ((CheckpointDay) day).setStudyPlan(studyPlan);
-                days.add(day);
+            if (i == numberOfDays - 1) {
+                DeadlineDay deadlineDay = new DeadlineDay();
+                deadlineDay.setStudyPlan(studyPlan);
+                days.add(deadlineDay);
+            } else if ((i + 1) % 7 == 0) {
+                CheckpointDay checkpointDay = new CheckpointDay();
+                checkpointDay.setStudyPlan(studyPlan);
+                days.add(checkpointDay);
             } else {
                 StudyDay studyDay = new StudyDay();
                 studyDay.setStudyPlan(studyPlan);
@@ -64,8 +69,6 @@ public class StudyPlanService {
             }
         }
         studyPlan.setDays(days);
-
-        // Salva il piano di studi e associa l'utente
         studyPlan = studyPlanRepo.save(studyPlan);
         user.setStudyPlan(studyPlan);
         userRepo.save(user);
@@ -135,7 +138,28 @@ public class StudyPlanService {
             throw new NotFoundException("Studyplan not found for user with id=" + userId);
         }
 
-        studyPlan.getMantras().addAll(mantras);
+        List<Day> days = studyPlan.getDays();
+
+        if (days == null || days.isEmpty()) {
+            throw new NotFoundException("No days found in the study plan for user with id=" + userId);
+        }
+
+        int mantraIndex = 0;
+        int totalMantras = mantras.size();
+
+        for (Day day : days) {
+            if (day instanceof StudyDay) {
+                StudyDay studyDay = (StudyDay) day;
+
+                if (mantraIndex >= totalMantras){
+                    mantraIndex = 0;
+                }
+                Mantra mantra = mantras.get(mantraIndex);
+                studyDay.setMantra(mantra);
+                mantraIndex++;
+            }
+        }
+
         studyPlanRepo.save(studyPlan);
     }
 
@@ -149,32 +173,31 @@ public class StudyPlanService {
         };
     }
 
+    @Transactional
     public void deleteStudyPlanByUserId(int userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
         StudyPlan studyPlan = user.getStudyPlan();
         if (studyPlan != null) {
-            // Disassocia il piano di studi dall'utente
             user.setStudyPlan(null);
             userRepo.save(user);
-
-            // Rimuovi le entità dipendenti
             List<Day> days = studyPlan.getDays();
 
             for (Day day : days) {
                 if (day instanceof StudyDay) {
                     StudyDay studyDay = (StudyDay) day;
+                    studyDay.setMantra(null); // Rimuovi il mantra da StudyDay
+
                     for (ActivitySession session : studyDay.getActivitySessions()) {
-                        activitySessionRepo.delete(session);
+                        activitySessionRepo.delete(session); // Cancella tutte le sessioni associate a StudyDay
                     }
-                    studyDayRepo.delete(studyDay);
+                    studyDayRepo.delete(studyDay); // Cancella lo StudyDay dal repository
                 } else if (day instanceof CheckpointDay) {
                     CheckpointDay checkpointDay = (CheckpointDay) day;
-                    checkpointDayRepo.delete(checkpointDay);
+                    checkpointDayRepo.delete(checkpointDay); // Cancella il CheckpointDay dal repository
                 }
             }
 
-            // Elimina il piano di studi
             studyPlanRepo.delete(studyPlan);
         } else {
             throw new NotFoundException("StudyPlan not found for user with id=" + userId);
