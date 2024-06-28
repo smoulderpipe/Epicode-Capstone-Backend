@@ -21,4 +21,12 @@ public class Question {
     @OneToMany(mappedBy = "question")
     @JsonIgnore
     List<Answer> answers;
+
+    @ManyToMany(mappedBy = "questions")
+    @JsonIgnore
+    private List<DeadlineDay> deadlineDays;
+
+    @ManyToMany(mappedBy = "questions")
+    @JsonIgnore
+    private List<CheckpointDay> checkpointDays;
 }

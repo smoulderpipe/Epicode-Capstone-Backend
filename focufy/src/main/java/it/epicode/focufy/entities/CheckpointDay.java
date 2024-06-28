@@ -1,7 +1,6 @@
 package it.epicode.focufy.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,7 +14,14 @@ public class CheckpointDay extends Day{
 
     private String type = "CheckpointDay";
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "checkpoint_day_question",
+            joinColumns = @JoinColumn(name = "checkpoint_day_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id")
+    )
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
+
+
 }
