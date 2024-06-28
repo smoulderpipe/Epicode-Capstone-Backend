@@ -14,4 +14,13 @@ What's your long term goal?,LONG_TERM_GOAL
 What's the goal of the study plan you want to set?,SHORT_TERM_GOAL
 How many days are available to achieve it?,DAYS
 How satisfied are you with your recent performance?,SATISFACTION
+Are you studying enough?,CHECKPOINT
+Are you having enough fun?,CHECKPOINT
+Are you sleeping enough?,CHECKPOINT
+Did you study enough?,DEADLINE
+Did you have enough fun?,DEADLINE
+Did you sleep enough?,DEADLINE
+Did you reach your long term goal?,DEADLINE
+Would you like to make a new study plan?,RESTART
+Your avatar doesn't fit you anymore?,RESTART
 Do you wish to reset your profile and repeat the avatar assignment test?,RESTART
