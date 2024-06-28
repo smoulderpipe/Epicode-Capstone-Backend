@@ -12,12 +12,22 @@ public abstract class Day {
    @GeneratedValue
    private int id;
 
+   private String name;
+
    private int availableHours;
+
+
+   private static int progressiveId = 1;
 
    @ManyToOne
    @JoinColumn(name = "studyplan_id")
    @JsonIgnore
    private StudyPlan studyPlan;
+
+   public Day() {
+      this.name = getClass().getSimpleName() + "_" + progressiveId;
+      progressiveId++;
+   }
 
    public abstract String getType();
 

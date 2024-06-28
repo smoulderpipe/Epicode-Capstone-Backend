@@ -15,9 +15,10 @@ public class QuestionDTO {
     private QuestionType questionType;
 
 
-    public QuestionDTO(int id, String questionText) {
+    public QuestionDTO(int id, String questionText, QuestionType questionType) {
         this.id = id;
         this.questionText = questionText;
+        this.questionType = questionType;
     }
 
     public QuestionDTO() {
@@ -27,6 +28,7 @@ public class QuestionDTO {
         QuestionDTO questionDTO = new QuestionDTO();
         questionDTO.setId(question.getId());
         questionDTO.setQuestionText(question.getQuestionText());
+        questionDTO.setQuestionType(question.getQuestionType());
         return questionDTO;
     }
 

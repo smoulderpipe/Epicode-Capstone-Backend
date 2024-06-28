@@ -13,7 +13,7 @@ public class StudyDayDTO extends DayDTO {
     private List<ActivitySessionDTO> activitySessions;
 
     public StudyDayDTO(StudyDay studyDay) {
-        super(studyDay.getId(), "StudyDay");
+        super(studyDay.getId(), "StudyDay", studyDay.getName());
         this.mantra = studyDay.getMantra() != null ? studyDay.getMantra().getText() : null;
         this.activitySessions = studyDay.getActivitySessions().stream()
                 .map(session -> {

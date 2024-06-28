@@ -58,13 +58,11 @@ public class StudyPlanService {
         studyPlan.setUser(user);
         studyPlan.setShortTermGoal(studyPlanDTO.getShortTermGoal());
 
-        // Salva il StudyPlan senza giorni
         studyPlan = studyPlanRepo.save(studyPlan);
 
-        // Recupera le domande di tipo CHECKPOINT e RESTART
         List<Question> checkpointQuestions = questionRepo.findByQuestionType(QuestionType.CHECKPOINT);
         List<Question> restartQuestions = questionRepo.findByQuestionType(QuestionType.RESTART);
-        // Recupera le domande di tipo DEADLINE
+
         List<Question> deadlineQuestions = questionRepo.findByQuestionType(QuestionType.DEADLINE);
 
         List<Day> days = new ArrayList<>();
@@ -73,16 +71,19 @@ public class StudyPlanService {
             if (i == numberOfDays - 1) {
                 DeadlineDay deadlineDay = new DeadlineDay();
                 deadlineDay.setStudyPlan(studyPlan); // Imposta il riferimento al StudyPlan
+//                deadlineDay.setName("Deadline Day " + (i + 1));
                 deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
                 days.add(deadlineDay);
             } else if ((i + 1) % 7 == 0) {
                 CheckpointDay checkpointDay = new CheckpointDay();
                 checkpointDay.setStudyPlan(studyPlan); // Imposta il riferimento al StudyPlan
+//                checkpointDay.setName("Checkpoint Day " + (i + 1));
                 checkpointDay = dayService.saveCheckpointDayWithQuestions(checkpointDay, checkpointQuestions, restartQuestions);
                 days.add(checkpointDay);
             } else {
                 StudyDay studyDay = new StudyDay();
                 studyDay.setStudyPlan(studyPlan);
+//                studyDay.setName("Study Day " + (i + 1));
                 addActivitySessionsToStudyDay(studyDay, user.getAvatar().getChronotype().getChronotypeType());
                 studyDay = studyDayRepo.save(studyDay);
                 days.add(studyDay);
@@ -267,6 +268,7 @@ public class StudyPlanService {
         StudyDayDTO studyDayDTO = new StudyDayDTO();
         studyDayDTO.setId(studyDay.getId());
         studyDayDTO.setType("StudyDay");
+        studyDayDTO.setName(studyDay.getName());
         studyDayDTO.setMantra(studyDay.getMantra() != null ? studyDay.getMantra().getText() : null);
         studyDayDTO.setActivitySessions(studyDay.getActivitySessions().stream()
                 .map(session -> new ActivitySessionDTO(session.getActivitySessionType(), session.getDuration(), session.getStartTime()))
@@ -278,11 +280,11 @@ public class StudyPlanService {
         CheckpointDayDTO checkpointDayDTO = new CheckpointDayDTO();
         checkpointDayDTO.setId(checkpointDay.getId());
         checkpointDayDTO.setType("CheckpointDay");
-
+        checkpointDayDTO.setName(checkpointDay.getName());
         List<Question> questions = checkpointDay.getQuestions();
         if (questions != null) {
             checkpointDayDTO.setQuestions(questions.stream()
-                    .map(question -> new QuestionDTO(question.getId(), question.getQuestionText()))
+                    .map(question -> new QuestionDTO(question.getId(), question.getQuestionText(), question.getQuestionType()))
                     .collect(Collectors.toList()));
         } else {
             checkpointDayDTO.setQuestions(Collections.emptyList());
@@ -295,11 +297,11 @@ public class StudyPlanService {
         DeadlineDayDTO deadlineDayDTO = new DeadlineDayDTO();
         deadlineDayDTO.setId(deadlineDay.getId());
         deadlineDayDTO.setType("DeadlineDay");
-
+        deadlineDayDTO.setName(deadlineDay.getName());
         List<Question> questions = deadlineDay.getQuestions();
         if (questions != null) {
             deadlineDayDTO.setQuestions(questions.stream()
-                    .map(question -> new QuestionDTO(question.getId(), question.getQuestionText()))
+                    .map(question -> new QuestionDTO(question.getId(), question.getQuestionText(), question.getQuestionType()))
                     .collect(Collectors.toList()));
         } else {
             deadlineDayDTO.setQuestions(Collections.emptyList());

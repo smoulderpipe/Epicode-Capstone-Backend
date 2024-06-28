@@ -12,7 +12,7 @@ public class CheckpointDayDTO extends DayDTO {
     private List<QuestionDTO> questions;
 
     public CheckpointDayDTO(CheckpointDay checkpointDay) {
-        super(checkpointDay.getId(), "CheckpointDay");
+        super(checkpointDay.getId(), "CheckpointDay", checkpointDay.getName());
         this.questions = checkpointDay.getQuestions().stream()
                 .map(QuestionDTO::createFromQuestion)
                 .collect(Collectors.toList());

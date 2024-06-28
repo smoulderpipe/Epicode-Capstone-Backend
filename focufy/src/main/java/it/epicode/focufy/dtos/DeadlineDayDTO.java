@@ -12,13 +12,13 @@ public class DeadlineDayDTO extends DayDTO {
     private List<QuestionDTO> questions;
 
     public DeadlineDayDTO(DeadlineDay deadlineDay) {
-        super(deadlineDay.getId(), "DeadlineDay");
+        super(deadlineDay.getId(), "DeadlineDay", deadlineDay.getName());
         this.questions = deadlineDay.getQuestions().stream()
                 .map(QuestionDTO::createFromQuestion)
                 .collect(Collectors.toList());
     }
 
     public DeadlineDayDTO() {
-        super(); // Assicurati che il costruttore della superclasse DayDTO sia chiamato
+        super();
     }
 }
