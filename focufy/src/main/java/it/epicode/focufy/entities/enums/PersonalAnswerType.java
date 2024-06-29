@@ -5,5 +5,7 @@ public enum PersonalAnswerType {
     SHORT_TERM_GOAL,
     LONG_TERM_GOAL,
     SATISFACTION,
+    CHECKPOINT,
+    DEADLINE,
     RESTART
 }
