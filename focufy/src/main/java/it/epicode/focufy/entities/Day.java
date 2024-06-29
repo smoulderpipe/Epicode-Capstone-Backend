@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name="Days")
@@ -20,6 +22,8 @@ public abstract class Day {
    @JoinColumn(name = "studyplan_id")
    @JsonIgnore
    private StudyPlan studyPlan;
+
+   private LocalDate date;
 
    private static int nameCounter = 1;
 

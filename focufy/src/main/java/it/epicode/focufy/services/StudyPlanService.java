@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +53,6 @@ public class StudyPlanService {
 
     @Transactional
     public StudyPlan saveStudyPlanAndCreateDays(StudyPlanDTO studyPlanDTO) {
-
         User user = userRepo.findById(studyPlanDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException("User with id=" + studyPlanDTO.getUserId() + " not found."));
 
@@ -67,30 +68,33 @@ public class StudyPlanService {
 
         List<Day> days = new ArrayList<>();
         int numberOfDays = studyPlanDTO.getNumberOfDays();
-
-        // Introduce a counter to track day names
+        LocalDate currentDate = LocalDate.now();  // Data odierna
         int dayCounter = 1;
 
         for (int i = 0; i < numberOfDays; i++) {
             String dayName = "DAY " + dayCounter;
-            dayCounter++; // Increment counter after assigning the name
+            LocalDate dayDate = currentDate.plusDays(i);  // Calcola la data per il giorno corrente
+            dayCounter++; // Incrementa il contatore dopo aver assegnato il nome
 
-            if (i == numberOfDays - 1) {
-                DeadlineDay deadlineDay = new DeadlineDay();
-                deadlineDay.setStudyPlan(studyPlan);
-                deadlineDay.setName(dayName);
-                deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
-                days.add(deadlineDay);
-            } else if ((i + 1) % 7 == 0) {
+            if (dayDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 CheckpointDay checkpointDay = new CheckpointDay();
                 checkpointDay.setStudyPlan(studyPlan);
                 checkpointDay.setName(dayName);
+                checkpointDay.setDate(dayDate);  // Imposta la data
                 checkpointDay = dayService.saveCheckpointDayWithQuestions(checkpointDay, checkpointQuestions, restartQuestions);
                 days.add(checkpointDay);
+            } else if (i == numberOfDays - 1) {
+                DeadlineDay deadlineDay = new DeadlineDay();
+                deadlineDay.setStudyPlan(studyPlan);
+                deadlineDay.setName(dayName);
+                deadlineDay.setDate(dayDate);  // Imposta la data
+                deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
+                days.add(deadlineDay);
             } else {
                 StudyDay studyDay = new StudyDay();
                 studyDay.setStudyPlan(studyPlan);
                 studyDay.setName(dayName);
+                studyDay.setDate(dayDate);  // Imposta la data
                 addActivitySessionsToStudyDay(studyDay, user.getAvatar().getChronotype().getChronotypeType());
                 studyDay = studyDayRepo.save(studyDay);
                 days.add(studyDay);
@@ -276,6 +280,7 @@ public class StudyPlanService {
         studyDayDTO.setId(studyDay.getId());
         studyDayDTO.setType("StudyDay");
         studyDayDTO.setName(studyDay.getName());
+        studyDayDTO.setDate(studyDay.getDate());  // Imposta la data
         studyDayDTO.setMantra(studyDay.getMantra() != null ? studyDay.getMantra().getText() : null);
         studyDayDTO.setActivitySessions(studyDay.getActivitySessions().stream()
                 .map(session -> new ActivitySessionDTO(session.getActivitySessionType(), session.getDuration(), session.getStartTime()))
@@ -288,6 +293,7 @@ public class StudyPlanService {
         checkpointDayDTO.setId(checkpointDay.getId());
         checkpointDayDTO.setType("CheckpointDay");
         checkpointDayDTO.setName(checkpointDay.getName());
+        checkpointDayDTO.setDate(checkpointDay.getDate());  // Imposta la data
         List<Question> questions = checkpointDay.getQuestions();
         if (questions != null) {
             checkpointDayDTO.setQuestions(questions.stream()
@@ -305,6 +311,7 @@ public class StudyPlanService {
         deadlineDayDTO.setId(deadlineDay.getId());
         deadlineDayDTO.setType("DeadlineDay");
         deadlineDayDTO.setName(deadlineDay.getName());
+        deadlineDayDTO.setDate(deadlineDay.getDate());  // Imposta la data
         List<Question> questions = deadlineDay.getQuestions();
         if (questions != null) {
             deadlineDayDTO.setQuestions(questions.stream()
