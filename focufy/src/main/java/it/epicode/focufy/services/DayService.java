@@ -42,10 +42,7 @@ public class DayService {
 
     @Transactional
     public CheckpointDay saveCheckpointDayWithQuestions(CheckpointDay checkpointDay, List<Question> checkpointQuestions, List<Question> restartQuestions) {
-        // Salva il CheckpointDay per ottenere l'ID generato
         checkpointDay = checkpointDayRepo.save(checkpointDay);
-
-        // Assegna domande di tipo CHECKPOINT e RESTART al CheckpointDay
         associateQuestionsWithDay(checkpointDay, checkpointQuestions, restartQuestions);
 
         return checkpointDay;
@@ -56,12 +53,12 @@ public class DayService {
             DeadlineDay deadlineDay = (DeadlineDay) day;
             deadlineDay.getQuestions().addAll(primaryQuestions);
             deadlineDay.getQuestions().addAll(secondaryQuestions);
-            deadlineDayRepo.save(deadlineDay); // Salvataggio aggiornato con le domande associate
+            deadlineDayRepo.save(deadlineDay);
         } else if (day instanceof CheckpointDay) {
             CheckpointDay checkpointDay = (CheckpointDay) day;
             checkpointDay.getQuestions().addAll(primaryQuestions);
             checkpointDay.getQuestions().addAll(secondaryQuestions);
-            checkpointDayRepo.save(checkpointDay); // Salvataggio aggiornato con le domande associate
+            checkpointDayRepo.save(checkpointDay);
         } else {
             throw new IllegalArgumentException("Unsupported day type: " + day.getClass().getSimpleName());
         }

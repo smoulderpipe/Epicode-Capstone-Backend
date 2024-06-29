@@ -16,19 +16,17 @@ public abstract class Day {
 
    private int availableHours;
 
-
-   private static int progressiveId = 1;
-
    @ManyToOne
    @JoinColumn(name = "studyplan_id")
    @JsonIgnore
    private StudyPlan studyPlan;
 
+   private static int nameCounter = 1;
+
    public Day() {
-      this.name = getClass().getSimpleName() + "_" + progressiveId;
-      progressiveId++;
+      this.name = "DAY " + nameCounter;
+      nameCounter++;
    }
 
    public abstract String getType();
-
 }

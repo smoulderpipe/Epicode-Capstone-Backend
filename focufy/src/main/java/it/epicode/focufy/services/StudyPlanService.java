@@ -51,6 +51,7 @@ public class StudyPlanService {
 
     @Transactional
     public StudyPlan saveStudyPlanAndCreateDays(StudyPlanDTO studyPlanDTO) {
+
         User user = userRepo.findById(studyPlanDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException("User with id=" + studyPlanDTO.getUserId() + " not found."));
 
@@ -62,28 +63,34 @@ public class StudyPlanService {
 
         List<Question> checkpointQuestions = questionRepo.findByQuestionType(QuestionType.CHECKPOINT);
         List<Question> restartQuestions = questionRepo.findByQuestionType(QuestionType.RESTART);
-
         List<Question> deadlineQuestions = questionRepo.findByQuestionType(QuestionType.DEADLINE);
 
         List<Day> days = new ArrayList<>();
         int numberOfDays = studyPlanDTO.getNumberOfDays();
+
+        // Introduce a counter to track day names
+        int dayCounter = 1;
+
         for (int i = 0; i < numberOfDays; i++) {
+            String dayName = "DAY " + dayCounter;
+            dayCounter++; // Increment counter after assigning the name
+
             if (i == numberOfDays - 1) {
                 DeadlineDay deadlineDay = new DeadlineDay();
-                deadlineDay.setStudyPlan(studyPlan); // Imposta il riferimento al StudyPlan
-//                deadlineDay.setName("Deadline Day " + (i + 1));
+                deadlineDay.setStudyPlan(studyPlan);
+                deadlineDay.setName(dayName);
                 deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
                 days.add(deadlineDay);
             } else if ((i + 1) % 7 == 0) {
                 CheckpointDay checkpointDay = new CheckpointDay();
-                checkpointDay.setStudyPlan(studyPlan); // Imposta il riferimento al StudyPlan
-//                checkpointDay.setName("Checkpoint Day " + (i + 1));
+                checkpointDay.setStudyPlan(studyPlan);
+                checkpointDay.setName(dayName);
                 checkpointDay = dayService.saveCheckpointDayWithQuestions(checkpointDay, checkpointQuestions, restartQuestions);
                 days.add(checkpointDay);
             } else {
                 StudyDay studyDay = new StudyDay();
                 studyDay.setStudyPlan(studyPlan);
-//                studyDay.setName("Study Day " + (i + 1));
+                studyDay.setName(dayName);
                 addActivitySessionsToStudyDay(studyDay, user.getAvatar().getChronotype().getChronotypeType());
                 studyDay = studyDayRepo.save(studyDay);
                 days.add(studyDay);
