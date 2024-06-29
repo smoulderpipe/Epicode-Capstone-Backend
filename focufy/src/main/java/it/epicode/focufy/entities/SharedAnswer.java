@@ -1,5 +1,6 @@
 package it.epicode.focufy.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.epicode.focufy.entities.enums.SharedAnswerType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class SharedAnswer extends Answer{
             joinColumns = @JoinColumn(name = "shared_answer_id"),
             inverseJoinColumns = @JoinColumn(name="user_id")
     )
-    @JsonIgnore
+    @JsonManagedReference
     private List<User> users;
 
     public List<User> getUsers() {

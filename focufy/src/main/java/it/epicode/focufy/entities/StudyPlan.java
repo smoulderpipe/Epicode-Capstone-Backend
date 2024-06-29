@@ -1,8 +1,10 @@
 package it.epicode.focufy.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -14,6 +16,7 @@ public class StudyPlan {
     private int id;
 
     @OneToOne
+    @JsonBackReference
     private User user;
 
     @Column(name="short_term_goal")
@@ -31,6 +34,11 @@ public class StudyPlan {
     )
     @JsonIgnore
     private List<Mantra> mantras;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, shortTermGoal, mantras);
+    }
 
 
 }

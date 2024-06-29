@@ -1,5 +1,7 @@
 package it.epicode.focufy.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.epicode.focufy.entities.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 
 @Data
@@ -32,16 +35,17 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<PersonalAnswer> personalAnswers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<SharedAnswer> sharedAnswers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "avatar_id")
+    @JsonIgnore
     private Avatar avatar;
 
-    @OneToOne
-    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    @JsonManagedReference
     private StudyPlan studyPlan;
 
     private String longTermGoal;
@@ -74,5 +78,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, userRole);
     }
 }

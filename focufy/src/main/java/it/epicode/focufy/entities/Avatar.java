@@ -1,4 +1,5 @@
 package it.epicode.focufy.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Avatar {
     private String image;
 
     @ManyToMany(mappedBy = "avatar")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     public Avatar(Chronotype chronotype, Temper temper, String image) {
