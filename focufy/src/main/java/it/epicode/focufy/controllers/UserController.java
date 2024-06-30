@@ -1,5 +1,6 @@
 package it.epicode.focufy.controllers;
 import it.epicode.focufy.dtos.CreateUserDTO;
+import it.epicode.focufy.dtos.UpdateLongTermGoalDTO;
 import it.epicode.focufy.entities.Avatar;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.exceptions.BadRequestException;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public User getUser (@PathVariable int id){
         return userService.getUserById(id).orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
     }
@@ -64,5 +65,14 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/api/users/{id}/long-term-goal")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public User updateUserLongTermGoal(@PathVariable int id, @RequestBody @Validated UpdateLongTermGoalDTO longTermGoalDTO, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s + s2)));
+        }
+        return userService.updateUserLongTermGoal(id, longTermGoalDTO.getLongTermGoal());
     }
 }

@@ -20,7 +20,5 @@ Are you sleeping enough?,CHECKPOINT
 Did you study enough?,DEADLINE
 Did you have enough fun?,DEADLINE
 Did you sleep enough?,DEADLINE
-Did you reach your long term goal?,DEADLINE
-Would you like to make a new study plan?,RESTART
+Did you reach your proximal goal?,DEADLINE
 Your avatar doesn't fit you anymore?,RESTART
-Do you wish to reset your profile and repeat the avatar assignment test?,RESTART

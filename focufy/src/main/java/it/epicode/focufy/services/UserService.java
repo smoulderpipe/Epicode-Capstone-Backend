@@ -79,5 +79,16 @@ public class UserService {
         }
     }
 
+    public User updateUserLongTermGoal(int userId, String longTermGoal) {
+        Optional<User> userOptional = userRepo.findById(userId);
+        if (userOptional.isPresent()) {
+            User userToUpdate = userOptional.get();
+            userToUpdate.setLongTermGoal(longTermGoal);
+            return userRepo.save(userToUpdate);
+        } else {
+            throw new NotFoundException("User with id=" + userId + " not found.");
+        }
+    }
+
 
 }
