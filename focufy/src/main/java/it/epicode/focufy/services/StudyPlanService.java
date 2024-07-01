@@ -68,33 +68,33 @@ public class StudyPlanService {
 
         List<Day> days = new ArrayList<>();
         int numberOfDays = studyPlanDTO.getNumberOfDays();
-        LocalDate currentDate = LocalDate.now();  // Data odierna
+        LocalDate currentDate = LocalDate.now();
         int dayCounter = 1;
 
         for (int i = 0; i < numberOfDays; i++) {
             String dayName = "DAY " + dayCounter;
-            LocalDate dayDate = currentDate.plusDays(i);  // Calcola la data per il giorno corrente
-            dayCounter++; // Incrementa il contatore dopo aver assegnato il nome
+            LocalDate dayDate = currentDate.plusDays(i);
+            dayCounter++;
 
             if (dayDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 CheckpointDay checkpointDay = new CheckpointDay();
                 checkpointDay.setStudyPlan(studyPlan);
                 checkpointDay.setName(dayName);
-                checkpointDay.setDate(dayDate);  // Imposta la data
+                checkpointDay.setDate(dayDate);
                 checkpointDay = dayService.saveCheckpointDayWithQuestions(checkpointDay, checkpointQuestions, restartQuestions);
                 days.add(checkpointDay);
             } else if (i == numberOfDays - 1) {
                 DeadlineDay deadlineDay = new DeadlineDay();
                 deadlineDay.setStudyPlan(studyPlan);
                 deadlineDay.setName(dayName);
-                deadlineDay.setDate(dayDate);  // Imposta la data
+                deadlineDay.setDate(dayDate);
                 deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
                 days.add(deadlineDay);
             } else {
                 StudyDay studyDay = new StudyDay();
                 studyDay.setStudyPlan(studyPlan);
                 studyDay.setName(dayName);
-                studyDay.setDate(dayDate);  // Imposta la data
+                studyDay.setDate(dayDate);
                 addActivitySessionsToStudyDay(studyDay, user.getAvatar().getChronotype().getChronotypeType());
                 studyDay = studyDayRepo.save(studyDay);
                 days.add(studyDay);
@@ -149,10 +149,10 @@ public class StudyPlanService {
 
     private LocalTime calculateFunStartTime(ChronotypeType chronotype) {
         return switch (chronotype) {
-            case LION -> LocalTime.of(17, 0); // 17:00 (5:00 di pomeriggio)
-            case BEAR -> LocalTime.of(19, 0); // 19:00 (7:00 di sera)
-            case DOLPHIN -> LocalTime.of(20, 0); // 20:00 (8:00 di sera)
-            case WOLF -> LocalTime.of(11, 0); // 11:00 del mattino
+            case LION -> LocalTime.of(17, 0);
+            case BEAR -> LocalTime.of(19, 0);
+            case DOLPHIN -> LocalTime.of(20, 0);
+            case WOLF -> LocalTime.of(11, 0);
             default -> throw new IllegalArgumentException("Unknown chronotype");
         };
     }
@@ -219,15 +219,15 @@ public class StudyPlanService {
             for (Day day : days) {
                 if (day instanceof StudyDay) {
                     StudyDay studyDay = (StudyDay) day;
-                    studyDay.setMantra(null); // Rimuovi il mantra da StudyDay
+                    studyDay.setMantra(null);
 
                     for (ActivitySession session : studyDay.getActivitySessions()) {
-                        activitySessionRepo.delete(session); // Cancella tutte le sessioni associate a StudyDay
+                        activitySessionRepo.delete(session);
                     }
-                    studyDayRepo.delete(studyDay); // Cancella lo StudyDay dal repository
+                    studyDayRepo.delete(studyDay);
                 } else if (day instanceof CheckpointDay) {
                     CheckpointDay checkpointDay = (CheckpointDay) day;
-                    checkpointDayRepo.delete(checkpointDay); // Cancella il CheckpointDay dal repository
+                    checkpointDayRepo.delete(checkpointDay);
                 }
             }
 
@@ -247,12 +247,11 @@ public class StudyPlanService {
             throw new NotFoundException("Study plan not found for user with id=" + userId);
         }
 
-        // Forzare il caricamento delle domande per tutti i giorni nel piano di studio
         for (Day day : studyPlan.getDays()) {
             if (day instanceof CheckpointDay) {
-                ((CheckpointDay) day).getQuestions().size(); // Carica le domande
+                ((CheckpointDay) day).getQuestions().size();
             } else if (day instanceof DeadlineDay) {
-                ((DeadlineDay) day).getQuestions().size(); // Carica le domande
+                ((DeadlineDay) day).getQuestions().size();
             }
         }
 
@@ -272,7 +271,7 @@ public class StudyPlanService {
         } else if (day instanceof DeadlineDay) {
             return mapToDeadlineDayDTO((DeadlineDay) day);
         }
-        return null; // Gestire altri tipi di giorno se necessario
+        return null;
     }
 
     private StudyDayDTO mapToStudyDayDTO(StudyDay studyDay) {
@@ -280,7 +279,7 @@ public class StudyPlanService {
         studyDayDTO.setId(studyDay.getId());
         studyDayDTO.setType("StudyDay");
         studyDayDTO.setName(studyDay.getName());
-        studyDayDTO.setDate(studyDay.getDate());  // Imposta la data
+        studyDayDTO.setDate(studyDay.getDate());
         studyDayDTO.setMantra(studyDay.getMantra() != null ? studyDay.getMantra().getText() : null);
         studyDayDTO.setActivitySessions(studyDay.getActivitySessions().stream()
                 .map(session -> new ActivitySessionDTO(session.getActivitySessionType(), session.getDuration(), session.getStartTime()))

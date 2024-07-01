@@ -4,9 +4,7 @@ import it.epicode.focufy.entities.*;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class StudyPlanResponseDTO {
