@@ -14,7 +14,7 @@ public class CheckpointDay extends Day{
 
     private String type = "CheckpointDay";
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "checkpoint_day_question",
             joinColumns = @JoinColumn(name = "checkpoint_day_id"),

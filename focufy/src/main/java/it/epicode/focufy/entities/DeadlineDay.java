@@ -14,7 +14,7 @@ public class DeadlineDay extends Day{
 
     private String type = "DeadlineDay";
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "deadline_day_question",
             joinColumns = @JoinColumn(name = "deadline_day_id"),

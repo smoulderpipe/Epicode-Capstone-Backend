@@ -10,8 +10,6 @@ import it.epicode.focufy.services.AvatarService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -263,31 +261,5 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-//    @PostMapping("/checkpoint/{checkpointDayId}/answers")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-//    public ResponseEntity<String> saveCheckpointAnswers(@PathVariable int checkpointDayId,
-//                                                        @RequestBody List<CheckpointAnswer> answers) {
-//
-//        try {
-//            answerService.saveCheckpointAnswers(checkpointDayId, answers);
-//            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Checkpoint answers saved successfully");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Failed to save checkpoint answers: " + e.getMessage());
-//        }
-//    }
-
-//    @PostMapping("/deadline/{deadlineDayId}/answers")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-//    public ResponseEntity<String> saveDeadlineAnswers(@PathVariable int deadlineDayId,
-//                                                      @RequestBody List<DeadlineAnswer> answers) {
-//        try {
-//            answerService.saveDeadlineAnswers(deadlineDayId, answers);
-//            return ResponseEntity.ok("Deadline answers saved successfully");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Failed to save deadline answers: " + e.getMessage());
-//        }
-//    }
 
 }

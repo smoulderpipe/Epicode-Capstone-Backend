@@ -54,6 +54,12 @@ public class AnswerService {
     @Autowired
     private DeadlineDayRepo deadlineDayRepo;
 
+    @Autowired
+    private StudyPlanService studyPlanService;
+
+    @Autowired
+    private UserService userService;
+
     public Page<PersonalAnswer> getAllPersonalAnswers(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return personalAnswerRepo.findAll(pageable);
@@ -111,7 +117,9 @@ public class AnswerService {
         if (personalAnswerDTO.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
             clearUserPersonalAnswers(user.getId());
             clearUserSharedAnswers(user.getId());
+
             avatarService.removeAvatarAssignment(user.getId());
+            studyPlanService.deleteStudyPlanByUserId(user.getId());
         }
 
         return "Personal answer saved successfully.";
@@ -134,7 +142,11 @@ public class AnswerService {
             if (dto.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
                 clearUserPersonalAnswers(user.getId());
                 clearUserSharedAnswers(user.getId());
+              clearUserCheckpointAnswers(user.getId());
+              clearUserDeadlineAnswers(user.getId());
+                userService.updateUserLongTermGoal(user.getId(), null);
                 avatarService.removeAvatarAssignment(user.getId());
+                studyPlanService.deleteStudyPlanByUserId(user.getId());
             }
         }
         return "Personal answers saved successfully.";
@@ -218,12 +230,17 @@ public class AnswerService {
         Optional<PersonalAnswer> answerOptional = getPersonalAnswerById(id);
         if (answerOptional.isPresent()) {
             PersonalAnswer answerToDelete = answerOptional.get();
+            Question question = answerToDelete.getQuestion();
+            question.getAnswers().remove(answerToDelete);
+
             personalAnswerRepo.delete(answerToDelete);
+
             return "PersonalAnswer with id=" + id + " correctly deleted.";
         } else {
             throw new NotFoundException("PersonalAnswer with id=" + id + " not found");
         }
     }
+
 
     public String deleteSharedAnswer(int id) {
         Optional<SharedAnswer> answerOptional = getSharedAnswerById(id);
@@ -313,7 +330,52 @@ public class AnswerService {
 
         personalAnswerRepo.deleteAll(personalAnswers);
 
+        for (PersonalAnswer personalAnswer : personalAnswers) {
+            personalAnswer.getUser().getPersonalAnswers().remove(personalAnswer);
+        }
+
         user.getPersonalAnswers().clear();
+        userRepo.save(user);
+    }
+
+    public void clearUserCheckpointAnswers(int userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        if (authenticatedUserId != userId) {
+            throw new UnauthorizedException("You are not allowed to clear shared answers for another user.");
+        }
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        List<CheckpointAnswer> checkpointAnswers = checkpointAnswerRepo.findByUserId(userId, pageable).getContent();
+
+        checkpointAnswerRepo.deleteAll(checkpointAnswers);
+        for (CheckpointAnswer checkpointAnswer : checkpointAnswers) {
+            checkpointAnswer.getUser().getCheckpointAnswers().remove(checkpointAnswer);
+        }
+
+        user.getCheckpointAnswers().clear();
+        userRepo.save(user);
+    }
+
+    public void clearUserDeadlineAnswers(int userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        if (authenticatedUserId != userId) {
+            throw new UnauthorizedException("You are not allowed to clear shared answers for another user.");
+        }
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        List<DeadlineAnswer> deadlineAnswers = deadlineAnswerRepo.findByUserId(userId, pageable).getContent();
+
+        deadlineAnswerRepo.deleteAll(deadlineAnswers);
+
+        user.getDeadlineAnswers().clear();
         userRepo.save(user);
     }
 
