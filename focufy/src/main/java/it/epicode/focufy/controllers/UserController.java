@@ -2,10 +2,13 @@ package it.epicode.focufy.controllers;
 import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.dtos.UpdateLongTermGoalDTO;
 import it.epicode.focufy.entities.Avatar;
+import it.epicode.focufy.entities.CheckpointAnswer;
+import it.epicode.focufy.entities.DeadlineAnswer;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.repositories.UserRepo;
+import it.epicode.focufy.services.AnswerService;
 import it.epicode.focufy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,9 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
+
+    @Autowired
+    private AnswerService answerService;
 
     @Autowired
     private UserRepo userRepo;
@@ -74,5 +80,25 @@ public class UserController {
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s + s2)));
         }
         return userService.updateUserLongTermGoal(id, longTermGoalDTO.getLongTermGoal());
+    }
+
+    @GetMapping("/api/users/{userId}/checkpoint")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
+    public ResponseEntity<Page<CheckpointAnswer>> getUserCheckpointAnswers(@PathVariable int userId,
+                                                                           @RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id") String sortBy) {
+        Page<CheckpointAnswer> checkpointAnswers = answerService.getOwnCheckpointAnswers(userId, page, size, sortBy);
+        return ResponseEntity.ok(checkpointAnswers);
+    }
+
+    @GetMapping("/api/users/{userId}/deadline")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
+    public ResponseEntity<Page<DeadlineAnswer>> getUserDeadlineAnswers(@PathVariable int userId,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                         @RequestParam(defaultValue = "id") String sortBy) {
+        Page<DeadlineAnswer> deadlineAnswers = answerService.getOwnDeadlineAnswers(userId, page, size, sortBy);
+        return ResponseEntity.ok(deadlineAnswers);
     }
 }

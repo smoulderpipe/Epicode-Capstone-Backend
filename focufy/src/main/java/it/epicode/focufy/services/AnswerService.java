@@ -1,4 +1,6 @@
 package it.epicode.focufy.services;
+import it.epicode.focufy.dtos.CheckpointAnswerDTO;
+import it.epicode.focufy.dtos.DeadlineAnswerDTO;
 import it.epicode.focufy.dtos.PersonalAnswerDTO;
 import it.epicode.focufy.dtos.SharedAnswerDTO;
 import it.epicode.focufy.entities.*;
@@ -39,6 +41,18 @@ public class AnswerService {
 
     @Autowired
     private AvatarService avatarService;
+
+    @Autowired
+    private CheckpointAnswerRepo checkpointAnswerRepo;
+
+    @Autowired
+    private DeadlineAnswerRepo deadlineAnswerRepo;
+
+    @Autowired
+    private CheckpointDayRepo checkpointDayRepo;
+
+    @Autowired
+    private DeadlineDayRepo deadlineDayRepo;
 
     public Page<PersonalAnswer> getAllPersonalAnswers(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
@@ -301,6 +315,78 @@ public class AnswerService {
 
         user.getPersonalAnswers().clear();
         userRepo.save(user);
+    }
+
+    public String saveCheckpointAnswers(List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+        for (CheckpointAnswerDTO dto : checkpointAnswerDTOs) {
+            User user = userRepo.findById(dto.getUserId())
+                    .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+
+            CheckpointAnswer checkpointAnswer = new CheckpointAnswer();
+            populateCheckpointAnswerFields(checkpointAnswer, dto, user);
+
+            if (user.getCheckpointAnswers() == null) {
+                user.setCheckpointAnswers(new ArrayList<>());
+            }
+            user.getCheckpointAnswers().add(checkpointAnswer);
+            checkpointAnswerRepo.save(checkpointAnswer);
+
+        }
+        return "Checkpoint answers saved successfully.";
+    }
+
+    private void populateCheckpointAnswerFields(CheckpointAnswer checkpointAnswer, CheckpointAnswerDTO checkpointAnswerDTO, User user) {
+        checkpointAnswer.setUser(user);
+        checkpointAnswer.setAnswerText(checkpointAnswerDTO.getAnswerText());
+
+        CheckpointDay checkpointDay = checkpointDayRepo.findById(checkpointAnswerDTO.getCheckpointDayId())
+                .orElseThrow(()-> new NotFoundException("Checkpoint Day with id=" + checkpointAnswerDTO.getCheckpointDayId() + " not found."));
+        checkpointAnswer.setCheckpointDay(checkpointDay);
+
+        Question question = questionRepo.findById(checkpointAnswerDTO.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("Question with id=" + checkpointAnswerDTO.getQuestionId() + " not found."));
+        checkpointAnswer.setQuestion(question);
+    }
+
+    public Page<CheckpointAnswer> getOwnCheckpointAnswers(int userId, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return checkpointAnswerRepo.findByUserId(userId, pageable);
+    }
+
+    public String saveDeadlineAnswers(List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+        for (DeadlineAnswerDTO dto : deadlineAnswerDTOs) {
+            User user = userRepo.findById(dto.getUserId())
+                    .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+
+            DeadlineAnswer deadlineAnswer = new DeadlineAnswer();
+            populateDeadlineAnswerFields(deadlineAnswer, dto, user);
+
+            if (user.getDeadlineAnswers() == null) {
+                user.setDeadlineAnswers(new ArrayList<>());
+            }
+            user.getDeadlineAnswers().add(deadlineAnswer);
+            deadlineAnswerRepo.save(deadlineAnswer);
+
+        }
+        return "Deadline answers saved successfully.";
+    }
+
+    private void populateDeadlineAnswerFields(DeadlineAnswer deadlineAnswer, DeadlineAnswerDTO deadlineAnswerDTO, User user) {
+        deadlineAnswer.setUser(user);
+        deadlineAnswer.setAnswerText(deadlineAnswerDTO.getAnswerText());
+
+        DeadlineDay deadlineDay = deadlineDayRepo.findById(deadlineAnswerDTO.getDeadlineDayId())
+                .orElseThrow(()-> new NotFoundException("Deadline Day with id=" + deadlineAnswerDTO.getDeadlineDayId() + " not found."));
+        deadlineAnswer.setDeadlineDay(deadlineDay);
+
+        Question question = questionRepo.findById(deadlineAnswerDTO.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("Question with id=" + deadlineAnswerDTO.getQuestionId() + " not found."));
+        deadlineAnswer.setQuestion(question);
+    }
+
+    public Page<DeadlineAnswer> getOwnDeadlineAnswers(int userId, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return deadlineAnswerRepo.findByUserId(userId, pageable);
     }
 
 }

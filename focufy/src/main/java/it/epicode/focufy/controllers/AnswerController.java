@@ -1,7 +1,5 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.AssignSharedAnswerDTO;
-import it.epicode.focufy.dtos.PersonalAnswerDTO;
-import it.epicode.focufy.dtos.SharedAnswerDTO;
+import it.epicode.focufy.dtos.*;
 import it.epicode.focufy.entities.*;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
@@ -12,6 +10,8 @@ import it.epicode.focufy.services.AvatarService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -242,5 +242,52 @@ public class AnswerController {
         }
     }
 
+    @PostMapping("/users/{userId}/checkpoint")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<String> saveCheckpointAnswers(@RequestBody List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+        try {
+            String resultMessage = answerService.saveCheckpointAnswers(checkpointAnswerDTOs);
+            return ResponseEntity.ok(resultMessage);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/users/{userId}/deadline")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<String> saveDeadlineAnswers(@RequestBody List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+        try {
+            String resultMessage = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
+            return ResponseEntity.ok(resultMessage);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+//    @PostMapping("/checkpoint/{checkpointDayId}/answers")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+//    public ResponseEntity<String> saveCheckpointAnswers(@PathVariable int checkpointDayId,
+//                                                        @RequestBody List<CheckpointAnswer> answers) {
+//
+//        try {
+//            answerService.saveCheckpointAnswers(checkpointDayId, answers);
+//            return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Checkpoint answers saved successfully");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to save checkpoint answers: " + e.getMessage());
+//        }
+//    }
+
+//    @PostMapping("/deadline/{deadlineDayId}/answers")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+//    public ResponseEntity<String> saveDeadlineAnswers(@PathVariable int deadlineDayId,
+//                                                      @RequestBody List<DeadlineAnswer> answers) {
+//        try {
+//            answerService.saveDeadlineAnswers(deadlineDayId, answers);
+//            return ResponseEntity.ok("Deadline answers saved successfully");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to save deadline answers: " + e.getMessage());
+//        }
+//    }
 
 }

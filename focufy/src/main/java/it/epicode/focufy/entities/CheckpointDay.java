@@ -23,5 +23,7 @@ public class CheckpointDay extends Day{
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "checkpointDay", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CheckpointAnswer> checkpointAnswers = new ArrayList<>();
 
 }

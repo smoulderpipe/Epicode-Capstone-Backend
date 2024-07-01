@@ -35,6 +35,14 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<PersonalAnswer> personalAnswers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<CheckpointAnswer> checkpointAnswers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<DeadlineAnswer> deadlineAnswers = new ArrayList<>();
+
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<SharedAnswer> sharedAnswers = new ArrayList<>();

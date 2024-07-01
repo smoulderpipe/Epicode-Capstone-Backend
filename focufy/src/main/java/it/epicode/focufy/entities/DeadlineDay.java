@@ -22,4 +22,7 @@ public class DeadlineDay extends Day{
     )
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "deadlineDay", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeadlineAnswer> deadlineAnswers = new ArrayList<>();
 }
