@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/answers")
@@ -242,23 +243,24 @@ public class AnswerController {
 
     @PostMapping("/users/{userId}/checkpoint")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<String> saveCheckpointAnswers(@RequestBody List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+    public ResponseEntity<List<CheckpointAnswerDTO>> saveCheckpointAnswers(@RequestBody List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
         try {
-            String resultMessage = answerService.saveCheckpointAnswers(checkpointAnswerDTOs);
-            return ResponseEntity.ok(resultMessage);
+            List<CheckpointAnswerDTO> savedAnswersDTO = answerService.saveCheckpointAnswers(checkpointAnswerDTOs);
+
+            return ResponseEntity.ok(savedAnswersDTO);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @PostMapping("/users/{userId}/deadline")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<String> saveDeadlineAnswers(@RequestBody List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+    public ResponseEntity<List<DeadlineAnswerDTO>> saveDeadlineAnswers(@RequestBody List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
         try {
-            String resultMessage = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
-            return ResponseEntity.ok(resultMessage);
+            List<DeadlineAnswerDTO> savedAnswersDTO = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
+            return ResponseEntity.ok(savedAnswersDTO);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

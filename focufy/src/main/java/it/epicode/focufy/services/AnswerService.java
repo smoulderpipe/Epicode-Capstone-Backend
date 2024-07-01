@@ -379,7 +379,9 @@ public class AnswerService {
         userRepo.save(user);
     }
 
-    public String saveCheckpointAnswers(List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+    public List<CheckpointAnswerDTO> saveCheckpointAnswers(List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+        List<CheckpointAnswerDTO> savedAnswersDTO = new ArrayList<>();
+
         for (CheckpointAnswerDTO dto : checkpointAnswerDTOs) {
             User user = userRepo.findById(dto.getUserId())
                     .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
@@ -393,8 +395,15 @@ public class AnswerService {
             user.getCheckpointAnswers().add(checkpointAnswer);
             checkpointAnswerRepo.save(checkpointAnswer);
 
+            savedAnswersDTO.add(convertCToDTO(checkpointAnswer)); // Converte e aggiunge alla lista di DTO salvate
         }
-        return "Checkpoint answers saved successfully.";
+
+        return savedAnswersDTO;
+    }
+
+    private CheckpointAnswerDTO convertCToDTO(CheckpointAnswer checkpointAnswer) {
+        CheckpointAnswerDTO dto = new CheckpointAnswerDTO();
+        return dto;
     }
 
     private void populateCheckpointAnswerFields(CheckpointAnswer checkpointAnswer, CheckpointAnswerDTO checkpointAnswerDTO, User user) {
@@ -415,7 +424,9 @@ public class AnswerService {
         return checkpointAnswerRepo.findByUserId(userId, pageable);
     }
 
-    public String saveDeadlineAnswers(List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+    public List<DeadlineAnswerDTO> saveDeadlineAnswers(List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+        List<DeadlineAnswerDTO> savedAnswersDTO = new ArrayList<>();
+
         for (DeadlineAnswerDTO dto : deadlineAnswerDTOs) {
             User user = userRepo.findById(dto.getUserId())
                     .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
@@ -429,8 +440,15 @@ public class AnswerService {
             user.getDeadlineAnswers().add(deadlineAnswer);
             deadlineAnswerRepo.save(deadlineAnswer);
 
+            savedAnswersDTO.add(convertDToDTO(deadlineAnswer)); // Converte e aggiunge alla lista di DTO salvate
         }
-        return "Deadline answers saved successfully.";
+
+        return savedAnswersDTO;
+    }
+
+    private DeadlineAnswerDTO convertDToDTO(DeadlineAnswer deadlineAnswer) {
+        DeadlineAnswerDTO dto = new DeadlineAnswerDTO();
+        return dto;
     }
 
     private void populateDeadlineAnswerFields(DeadlineAnswer deadlineAnswer, DeadlineAnswerDTO deadlineAnswerDTO, User user) {
