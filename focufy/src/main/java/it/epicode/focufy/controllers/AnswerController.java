@@ -59,6 +59,29 @@ public class AnswerController {
         return ResponseEntity.ok(personalAnswers);
     }
 
+    @GetMapping("/checkpoint/{checkpointDayId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<Page<CheckpointAnswer>> getCheckpointAnswerByDay(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                                           @PathVariable int checkpointDayId)
+    {
+        Page<CheckpointAnswer> checkpointAnswers = answerService.getCheckpointAnswersByCheckpointDayId(checkpointDayId, page, size, sortBy);
+        return ResponseEntity.ok(checkpointAnswers);
+    }
+
+    @GetMapping("/deadline/{deadlineDayId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<Page<DeadlineAnswer>> getDeadlineAnswerByDay(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                                           @PathVariable int deadlineDayId)
+    {
+        Page<DeadlineAnswer> deadlineAnswers = answerService.getDeadlineAnswersByDeadlineDayId(deadlineDayId, page, size, sortBy);
+        return ResponseEntity.ok(deadlineAnswers);
+    }
+
+
     @GetMapping("/shared/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<SharedAnswer> getSharedAnswerById(@PathVariable int id) {
@@ -249,6 +272,7 @@ public class AnswerController {
 
             return ResponseEntity.ok(savedAnswersDTO);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(null);
         }
     }
@@ -260,6 +284,7 @@ public class AnswerController {
             List<DeadlineAnswerDTO> savedAnswersDTO = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
             return ResponseEntity.ok(savedAnswersDTO);
         } catch (Exception e) {
+            e.printStackTrace(); // Log dell'eccezione
             return ResponseEntity.badRequest().body(null);
         }
     }

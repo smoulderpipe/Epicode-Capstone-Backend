@@ -16,6 +16,7 @@ import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -379,23 +380,40 @@ public class AnswerService {
         userRepo.save(user);
     }
 
+    @Transactional
     public List<CheckpointAnswerDTO> saveCheckpointAnswers(List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
         List<CheckpointAnswerDTO> savedAnswersDTO = new ArrayList<>();
 
         for (CheckpointAnswerDTO dto : checkpointAnswerDTOs) {
-            User user = userRepo.findById(dto.getUserId())
-                    .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+            try {
+                User user = userRepo.findById(dto.getUserId())
+                        .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
 
-            CheckpointAnswer checkpointAnswer = new CheckpointAnswer();
-            populateCheckpointAnswerFields(checkpointAnswer, dto, user);
+                int countAnswers = checkpointAnswerRepo.countByUserIdAndCheckpointDayId(dto.getUserId(), dto.getCheckpointDayId());
+                if (countAnswers >= 3) {
+                    throw new IllegalStateException("Maximum number of checkpoint answers exceeded for this day.");
+                }
 
-            if (user.getCheckpointAnswers() == null) {
-                user.setCheckpointAnswers(new ArrayList<>());
+                CheckpointAnswer checkpointAnswer = new CheckpointAnswer();
+                populateCheckpointAnswerFields(checkpointAnswer, dto, user);
+
+                if (user.getCheckpointAnswers() == null) {
+                    user.setCheckpointAnswers(new ArrayList<>());
+                }
+                user.getCheckpointAnswers().add(checkpointAnswer);
+                checkpointAnswerRepo.save(checkpointAnswer);
+
+                savedAnswersDTO.add(convertCToDTO(checkpointAnswer)); // Converte e aggiunge alla lista di DTO salvate
+            } catch (NotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+            } catch (IllegalStateException e) {
+                System.err.println("Error: " + e.getMessage());
+                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+            } catch (Exception e) {
+                System.err.println("Unexpected error: " + e.getMessage());
+                throw new RuntimeException("Unexpected error occurred", e); // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
             }
-            user.getCheckpointAnswers().add(checkpointAnswer);
-            checkpointAnswerRepo.save(checkpointAnswer);
-
-            savedAnswersDTO.add(convertCToDTO(checkpointAnswer)); // Converte e aggiunge alla lista di DTO salvate
         }
 
         return savedAnswersDTO;
@@ -428,19 +446,35 @@ public class AnswerService {
         List<DeadlineAnswerDTO> savedAnswersDTO = new ArrayList<>();
 
         for (DeadlineAnswerDTO dto : deadlineAnswerDTOs) {
-            User user = userRepo.findById(dto.getUserId())
-                    .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+            try {
+                User user = userRepo.findById(dto.getUserId())
+                        .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
 
-            DeadlineAnswer deadlineAnswer = new DeadlineAnswer();
-            populateDeadlineAnswerFields(deadlineAnswer, dto, user);
+                int countAnswers = deadlineAnswerRepo.countByUserIdAndDeadlineDayId(dto.getUserId(), dto.getDeadlineDayId());
+                if (countAnswers >= 4) {
+                    throw new IllegalStateException("Maximum number of deadline answers exceeded for this day.");
+                }
 
-            if (user.getDeadlineAnswers() == null) {
-                user.setDeadlineAnswers(new ArrayList<>());
+                DeadlineAnswer deadlineAnswer = new DeadlineAnswer();
+                populateDeadlineAnswerFields(deadlineAnswer, dto, user);
+
+                if (user.getDeadlineAnswers() == null) {
+                    user.setDeadlineAnswers(new ArrayList<>());
+                }
+                user.getDeadlineAnswers().add(deadlineAnswer);
+                deadlineAnswerRepo.save(deadlineAnswer);
+
+                savedAnswersDTO.add(convertDToDTO(deadlineAnswer)); // Converte e aggiunge alla lista di DTO salvate
+            } catch (NotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
+                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+            } catch (IllegalStateException e) {
+                System.err.println("Error: " + e.getMessage());
+                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+            } catch (Exception e) {
+                System.err.println("Unexpected error: " + e.getMessage());
+                throw new RuntimeException("Unexpected error occurred", e); // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
             }
-            user.getDeadlineAnswers().add(deadlineAnswer);
-            deadlineAnswerRepo.save(deadlineAnswer);
-
-            savedAnswersDTO.add(convertDToDTO(deadlineAnswer)); // Converte e aggiunge alla lista di DTO salvate
         }
 
         return savedAnswersDTO;
@@ -464,9 +498,19 @@ public class AnswerService {
         deadlineAnswer.setQuestion(question);
     }
 
+    public Page<CheckpointAnswer> getCheckpointAnswersByCheckpointDayId(int checkpointDayId, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return checkpointAnswerRepo.findByCheckpointDay_Id(checkpointDayId, pageable);
+    }
+
     public Page<DeadlineAnswer> getOwnDeadlineAnswers(int userId, int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return deadlineAnswerRepo.findByUserId(userId, pageable);
+    }
+
+    public Page<DeadlineAnswer> getDeadlineAnswersByDeadlineDayId(int deadlineDayId, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return deadlineAnswerRepo.findByDeadlineDay_Id(deadlineDayId, pageable);
     }
 
 }
