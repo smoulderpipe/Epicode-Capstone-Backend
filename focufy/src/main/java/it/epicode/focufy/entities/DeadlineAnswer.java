@@ -1,6 +1,7 @@
 package it.epicode.focufy.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.epicode.focufy.entities.enums.CDAnswerType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,4 +22,7 @@ public class DeadlineAnswer extends Answer{
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
+
+    @Enumerated
+    private CDAnswerType answerType;
 }

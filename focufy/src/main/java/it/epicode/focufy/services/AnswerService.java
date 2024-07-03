@@ -4,6 +4,7 @@ import it.epicode.focufy.dtos.DeadlineAnswerDTO;
 import it.epicode.focufy.dtos.PersonalAnswerDTO;
 import it.epicode.focufy.dtos.SharedAnswerDTO;
 import it.epicode.focufy.entities.*;
+import it.epicode.focufy.entities.enums.CDAnswerType;
 import it.epicode.focufy.entities.enums.PersonalAnswerType;
 import it.epicode.focufy.entities.enums.QuestionType;
 import it.epicode.focufy.entities.enums.SharedAnswerType;
@@ -427,6 +428,7 @@ public class AnswerService {
     private void populateCheckpointAnswerFields(CheckpointAnswer checkpointAnswer, CheckpointAnswerDTO checkpointAnswerDTO, User user) {
         checkpointAnswer.setUser(user);
         checkpointAnswer.setAnswerText(checkpointAnswerDTO.getAnswerText());
+        checkpointAnswer.setAnswerType(checkpointAnswerDTO.getAnswerType());
 
         CheckpointDay checkpointDay = checkpointDayRepo.findById(checkpointAnswerDTO.getCheckpointDayId())
                 .orElseThrow(()-> new NotFoundException("Checkpoint Day with id=" + checkpointAnswerDTO.getCheckpointDayId() + " not found."));
@@ -488,6 +490,7 @@ public class AnswerService {
     private void populateDeadlineAnswerFields(DeadlineAnswer deadlineAnswer, DeadlineAnswerDTO deadlineAnswerDTO, User user) {
         deadlineAnswer.setUser(user);
         deadlineAnswer.setAnswerText(deadlineAnswerDTO.getAnswerText());
+        deadlineAnswer.setAnswerType(deadlineAnswerDTO.getAnswerType());
 
         DeadlineDay deadlineDay = deadlineDayRepo.findById(deadlineAnswerDTO.getDeadlineDayId())
                 .orElseThrow(()-> new NotFoundException("Deadline Day with id=" + deadlineAnswerDTO.getDeadlineDayId() + " not found."));
@@ -512,5 +515,21 @@ public class AnswerService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return deadlineAnswerRepo.findByDeadlineDay_Id(deadlineDayId, pageable);
     }
+
+    public List<CheckpointAnswerDTO> getCheckpointAnswersByTypeAndUserId(CDAnswerType cdAnswerType, int userId) {
+        List<CheckpointAnswer> checkpointAnswers = checkpointAnswerRepo.findByAnswerTypeAndUserId(cdAnswerType, userId);
+        return checkpointAnswers.stream()
+                .map(this::convertCToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<DeadlineAnswerDTO> getDeadlineAnswersByTypeAndUserId(CDAnswerType cdAnswerType, int userId) {
+        List<DeadlineAnswer> deadlineAnswers = deadlineAnswerRepo.findByAnswerTypeAndUserId(cdAnswerType, userId);
+        return deadlineAnswers.stream()
+                .map(this::convertDToDTO)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

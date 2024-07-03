@@ -1,6 +1,7 @@
 package it.epicode.focufy.controllers;
 import it.epicode.focufy.dtos.*;
 import it.epicode.focufy.entities.*;
+import it.epicode.focufy.entities.enums.CDAnswerType;
 import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.exceptions.UnauthorizedException;
@@ -287,6 +288,18 @@ public class AnswerController {
             e.printStackTrace(); // Log dell'eccezione
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @GetMapping("/checkpoint/{cdAnswerType}/{userId}")
+    public ResponseEntity<List<CheckpointAnswerDTO>> getCheckpointAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
+        List<CheckpointAnswerDTO> checkpointAnswers = answerService.getCheckpointAnswersByTypeAndUserId(cdAnswerType, userId);
+        return ResponseEntity.ok(checkpointAnswers);
+    }
+
+    @GetMapping("/deadline/{cdAnswerType}/{userId}")
+    public ResponseEntity<List<DeadlineAnswerDTO>> getDeadlineAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
+        List<DeadlineAnswerDTO> deadlineAnswers = answerService.getDeadlineAnswersByTypeAndUserId(cdAnswerType, userId);
+        return ResponseEntity.ok(deadlineAnswers);
     }
 
 }

@@ -1,6 +1,7 @@
 package it.epicode.focufy.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.epicode.focufy.entities.enums.CDAnswerType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,5 +21,8 @@ public class CheckpointAnswer extends Answer{
     @JoinColumn(name = "checkpoint_day_id")
     @JsonIgnore
     private CheckpointDay checkpointDay;
+
+    @Enumerated
+    private CDAnswerType answerType;
 
 }
