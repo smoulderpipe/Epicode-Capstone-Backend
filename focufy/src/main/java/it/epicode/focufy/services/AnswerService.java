@@ -422,6 +422,11 @@ public class AnswerService {
 
     private CheckpointAnswerDTO convertCToDTO(CheckpointAnswer checkpointAnswer) {
         CheckpointAnswerDTO dto = new CheckpointAnswerDTO();
+        dto.setQuestionId(checkpointAnswer.getQuestion().getId());
+        dto.setAnswerText(checkpointAnswer.getAnswerText());
+        dto.setCheckpointDayId(checkpointAnswer.getCheckpointDay().getId());
+        dto.setUserId(checkpointAnswer.getUser().getId());
+        dto.setAnswerType(checkpointAnswer.getAnswerType());
         return dto;
     }
 
@@ -466,16 +471,16 @@ public class AnswerService {
                 user.getDeadlineAnswers().add(deadlineAnswer);
                 deadlineAnswerRepo.save(deadlineAnswer);
 
-                savedAnswersDTO.add(convertDToDTO(deadlineAnswer)); // Converte e aggiunge alla lista di DTO salvate
+                savedAnswersDTO.add(convertDToDTO(deadlineAnswer));
             } catch (NotFoundException e) {
                 System.err.println("Error: " + e.getMessage());
-                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw e;
             } catch (IllegalStateException e) {
                 System.err.println("Error: " + e.getMessage());
-                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw e;
             } catch (Exception e) {
                 System.err.println("Unexpected error: " + e.getMessage());
-                throw new RuntimeException("Unexpected error occurred", e); // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw new RuntimeException("Unexpected error occurred", e);
             }
         }
 
@@ -484,6 +489,11 @@ public class AnswerService {
 
     private DeadlineAnswerDTO convertDToDTO(DeadlineAnswer deadlineAnswer) {
         DeadlineAnswerDTO dto = new DeadlineAnswerDTO();
+        dto.setQuestionId(deadlineAnswer.getQuestion().getId());
+        dto.setAnswerText(deadlineAnswer.getAnswerText());
+        dto.setDeadlineDayId(deadlineAnswer.getDeadlineDay().getId());
+        dto.setUserId(deadlineAnswer.getUser().getId());
+        dto.setAnswerType(deadlineAnswer.getAnswerType());
         return dto;
     }
 

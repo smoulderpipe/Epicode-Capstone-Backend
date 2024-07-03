@@ -285,21 +285,36 @@ public class AnswerController {
             List<DeadlineAnswerDTO> savedAnswersDTO = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
             return ResponseEntity.ok(savedAnswersDTO);
         } catch (Exception e) {
-            e.printStackTrace(); // Log dell'eccezione
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(null);
         }
     }
 
-    @GetMapping("/checkpoint/{cdAnswerType}/{userId}")
+    @GetMapping("/users/{userId}/checkpoint/{cdAnswerType}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<CheckpointAnswerDTO>> getCheckpointAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
-        List<CheckpointAnswerDTO> checkpointAnswers = answerService.getCheckpointAnswersByTypeAndUserId(cdAnswerType, userId);
-        return ResponseEntity.ok(checkpointAnswers);
+        try{
+            List<CheckpointAnswerDTO> checkpointAnswers = answerService.getCheckpointAnswersByTypeAndUserId(cdAnswerType, userId);
+            return ResponseEntity.ok(checkpointAnswers);
+        } catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
+
     }
 
-    @GetMapping("/deadline/{cdAnswerType}/{userId}")
+    @GetMapping("/users/{userId}/deadline/{cdAnswerType}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<List<DeadlineAnswerDTO>> getDeadlineAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
-        List<DeadlineAnswerDTO> deadlineAnswers = answerService.getDeadlineAnswersByTypeAndUserId(cdAnswerType, userId);
-        return ResponseEntity.ok(deadlineAnswers);
+
+        try{
+            List<DeadlineAnswerDTO> deadlineAnswers = answerService.getDeadlineAnswersByTypeAndUserId(cdAnswerType, userId);
+            return ResponseEntity.ok(deadlineAnswers);
+        } catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(null);
+        }
+
     }
 
 }
