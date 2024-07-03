@@ -113,63 +113,63 @@ public class AvatarService {
             case LION:
                 switch(temper){
                     case WHIMSICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-lion_pvxrie.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035808/whimsical-lion_qtx7rp.png";
                         break;
                     case TENACIOUS:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342909/tenacious-lion_nevq66.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/tenacious-lion_ingt4p.png";
                         break;
                     case TACTICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342906/tactical-lion_h2ixvh.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035806/tactical-lion_roynge.png";
                         break;
                     case GREEDY:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342903/greedy-lion_gaq8z7.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035809/greedy-lion_ms2siq.png";
                         break;
                 }
                 break;
             case BEAR:
                 switch(temper){
                     case WHIMSICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342910/whimsical-bear_r26140.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/whimsical-bear_fqgpmy.png";
                         break;
                     case TENACIOUS:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342907/tenacious-bear_pdyjlm.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/tenacious-bear_rrwijv.png";
                         break;
                     case TACTICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342903/tactical-bear_clc5tp.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035806/tactical-bear_lhprum.png";
                         break;
                     case GREEDY:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342902/greedy-bear_akqyzv.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035808/greedy-bear_niy9be.png";
 
                 }
                 break;
             case DOLPHIN:
                 switch (temper){
                     case WHIMSICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342911/whimsical-dolphin_omksbl.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035808/whimsical-dolphin_hvqxh4.png";
                         break;
                     case TENACIOUS:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342908/tenacious-dolphin_lx16sp.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/tenacious-dolphin_n3t7de.png";
                         break;
                     case TACTICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342905/tactical-dolphin_jmbeng.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035806/tactical-dolphin_nv9qdb.png";
                         break;
                     case GREEDY:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342902/greedy_dolphin_fynk3v.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035808/greedy-dolphin_x1cnuo.png";
                 }
                 break;
             case WOLF:
                 switch(temper){
                     case WHIMSICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342912/whimsical-wolf_ni8z8d.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035808/whimsical-wolf_l07sqn.png";
                         break;
                     case TENACIOUS:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342909/tenacious-wolf_tgykta.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/tenacious-wolf_jkqkdh.png";
                         break;
                     case TACTICAL:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342907/tactical-wolf_osi14o.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035807/tactical-wolf_qtsrll.png";
                         break;
                     case GREEDY:
-                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1719342904/greedy-wolf_lfgoye.jpg";
+                        imagePath = "https://res.cloudinary.com/dwqbgtodp/image/upload/v1720035806/greedy-wolf_gpfckl.png";
                 }
             break;
         }
