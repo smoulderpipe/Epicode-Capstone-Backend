@@ -1,0 +1,48 @@
+Before 06:00am,1,LION
+Between 06:00am and 08:00am,1,BEAR
+Between 08:00am and 10:00am,1,DOLPHIN
+After 10:00am,1,WOLF
+Before 10:00pm,2,LION
+Between 10:00pm and 11:30pm,2,BEAR
+Between 11:30pm and 01:00am,2,DOLPHIN
+After 1:00am,2,WOLF
+Orange juice,3,LION
+Milk,3,BEAR
+Coffee,3,DOLPHIN
+Water,3,WOLF
+Early morning,4,LION
+Late morning,4,BEAR
+Afternoon,4,DOLPHIN
+Evening,4,WOLF
+Cinematic,5,LION
+Chilled,5,BEAR
+Progressive,5,DOLPHIN
+Silence is golden,5,WOLF
+Never,6,LION
+Monthly,6,BEAR
+Weekly,6,DOLPHIN
+Daily,6,WOLF
+Having new ideas,7,WHIMSICAL
+Knowing I have deadlines,7,TENACIOUS
+Wanting to check how my plans are working,7,TACTICAL
+Wanting to get back at my work,7,GREEDY
+Whatever I'm in the mood for,8,WHIMSICAL
+Something productive,8,TENACIOUS
+It depends on the context,8,TACTICAL
+Diving into my passion,8,GREEDY
+My instinct will help me to figure it out,9,WHIMSICAL
+Method and common sense,9,TENACIOUS
+I look at the problem from different angles,9,TACTICAL
+Is this a challenge?,9,GREEDY
+Procrastination is motivation,10,WHIMSICAL
+Almost never,10,TENACIOUS
+More than I should,10,TACTICAL
+Never if it's important to me,10,GREEDY
+As long as it's not boring,11,WHIMSICAL
+As long as the task requires,11,TENACIOUS
+Up until it makes sense,11,TACTICAL
+Night and day,11,GREEDY
+Freedom,12,WHIMSICAL
+Commitment,12,TENACIOUS
+Clarity,12,TACTICAL
+Greatness,12,GREEDY
