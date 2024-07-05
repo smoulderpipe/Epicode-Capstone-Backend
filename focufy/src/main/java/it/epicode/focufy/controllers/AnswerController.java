@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/answers")
@@ -227,7 +226,6 @@ public class AnswerController {
             response.put("message", "Personal answers saved successfully");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Handle any exceptions that might occur during saving
             response.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }

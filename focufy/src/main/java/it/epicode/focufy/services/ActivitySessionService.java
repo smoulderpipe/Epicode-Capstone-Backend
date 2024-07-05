@@ -1,6 +1,4 @@
 package it.epicode.focufy.services;
-
-import it.epicode.focufy.dtos.ActivitySessionDTO;
 import it.epicode.focufy.entities.ActivitySession;
 import it.epicode.focufy.entities.enums.ActivitySessionType;
 import it.epicode.focufy.repositories.ActivitySessionRepo;

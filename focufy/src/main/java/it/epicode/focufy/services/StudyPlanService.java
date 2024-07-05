@@ -1,5 +1,4 @@
 package it.epicode.focufy.services;
-
 import it.epicode.focufy.dtos.*;
 import it.epicode.focufy.entities.*;
 import it.epicode.focufy.entities.enums.*;
@@ -8,7 +7,6 @@ import it.epicode.focufy.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class StudyPlanService {

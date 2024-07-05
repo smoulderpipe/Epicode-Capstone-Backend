@@ -1,15 +1,8 @@
 package it.epicode.focufy.services;
 
-import it.epicode.focufy.dtos.MantraDTO;
-import it.epicode.focufy.entities.Avatar;
-import it.epicode.focufy.entities.Chronotype;
 import it.epicode.focufy.entities.Mantra;
-import it.epicode.focufy.entities.Temper;
-import it.epicode.focufy.entities.enums.ChronotypeType;
 import it.epicode.focufy.entities.enums.MantraType;
-import it.epicode.focufy.entities.enums.TemperType;
 import it.epicode.focufy.exceptions.BadRequestException;
-import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.repositories.MantraRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
