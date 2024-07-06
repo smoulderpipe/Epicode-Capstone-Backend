@@ -68,12 +68,14 @@ public class StudyPlanService {
         LocalDate currentDate = LocalDate.now();
         int dayCounter = 1;
 
+        Day lastDay = null;
+
         for (int i = 0; i < numberOfDays; i++) {
             String dayName = "DAY " + dayCounter;
             LocalDate dayDate = currentDate.plusDays(i);
             dayCounter++;
 
-            if (dayDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            if (dayDate.getDayOfWeek() == DayOfWeek.SUNDAY && i != numberOfDays - 1) {
                 CheckpointDay checkpointDay = new CheckpointDay();
                 checkpointDay.setStudyPlan(studyPlan);
                 checkpointDay.setName(dayName);
@@ -96,6 +98,17 @@ public class StudyPlanService {
                 studyDay = studyDayRepo.save(studyDay);
                 days.add(studyDay);
             }
+        }
+
+        // Check if the last day is a Sunday and replace it with a deadline day if necessary
+        if (days.get(days.size() - 1) instanceof CheckpointDay) {
+            Day checkpointDay = days.remove(days.size() - 1);
+            DeadlineDay deadlineDay = new DeadlineDay();
+            deadlineDay.setStudyPlan(studyPlan);
+            deadlineDay.setName(checkpointDay.getName());
+            deadlineDay.setDate(checkpointDay.getDate());
+            deadlineDay = dayService.saveDeadlineDayWithQuestions(deadlineDay, deadlineQuestions, restartQuestions);
+            days.add(deadlineDay);
         }
 
         studyPlan.setDays(days);
