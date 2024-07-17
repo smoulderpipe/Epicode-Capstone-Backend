@@ -9,41 +9,32 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ExceptionsHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> NotFoundHandler(NotFoundException e){
-        Error error = new Error();
-        error.setMessage(e.getMessage());
-        error.setErrorStatus(HttpStatus.NOT_FOUND);
-        error.setErrorTime(LocalDateTime.now());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
+        return buildErrorResponse(e, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Object> BadRequestHandler(BadRequestException e){
-        Error error = new Error();
-        error.setMessage(e.getMessage());
-        error.setErrorStatus(HttpStatus.BAD_REQUEST);
-        error.setErrorTime(LocalDateTime.now());
-
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException e) {
+        return buildErrorResponse(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<Object> EmailAlreadyHandler(EmailAlreadyExistsException e){
-        Error error = new Error();
-        error.setMessage(e.getMessage());
-        error.setErrorStatus(HttpStatus.BAD_REQUEST);
-        error.setErrorTime(LocalDateTime.now());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
+        return buildErrorResponse(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Object> UnauthHandler(UnauthorizedException e){
-        Error error = new Error();
-        error.setMessage(e.getMessage());
-        error.setErrorStatus(HttpStatus.UNAUTHORIZED);
-        error.setErrorTime(LocalDateTime.now());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e) {
+        return buildErrorResponse(e, HttpStatus.UNAUTHORIZED);
     }
 
+    private ResponseEntity<Object> buildErrorResponse(RuntimeException e, HttpStatus status) {
+        Error error = new Error();
+        error.setMessage(e.getMessage());
+        error.setErrorStatus(status);
+        error.setErrorTime(LocalDateTime.now());
+        return new ResponseEntity<>(error, status);
+    }
 }

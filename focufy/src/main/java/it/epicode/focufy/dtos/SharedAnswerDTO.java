@@ -17,4 +17,6 @@ public class SharedAnswerDTO {
     @NotBlank
     private String answerText;
 
+    public SharedAnswerDTO(int id, SharedAnswerType sharedAnswerType, String answerText) {
+    }
 }

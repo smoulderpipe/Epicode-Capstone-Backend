@@ -42,7 +42,7 @@ public class AnswerController {
     private SharedAnswerRepo sharedAnswerRepo;
 
     @GetMapping("/shared")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Page<SharedAnswer>> getSharedAnswers(@RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam(defaultValue = "id") String sortBy) {
@@ -59,39 +59,16 @@ public class AnswerController {
         return ResponseEntity.ok(personalAnswers);
     }
 
-    @GetMapping("/checkpoint/{checkpointDayId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<Page<CheckpointAnswer>> getCheckpointAnswerByDay(@RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                           @RequestParam(defaultValue = "id") String sortBy,
-                                                                           @PathVariable int checkpointDayId)
-    {
-        Page<CheckpointAnswer> checkpointAnswers = answerService.getCheckpointAnswersByCheckpointDayId(checkpointDayId, page, size, sortBy);
-        return ResponseEntity.ok(checkpointAnswers);
-    }
-
-    @GetMapping("/deadline/{deadlineDayId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<Page<DeadlineAnswer>> getDeadlineAnswerByDay(@RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                           @RequestParam(defaultValue = "id") String sortBy,
-                                                                           @PathVariable int deadlineDayId)
-    {
-        Page<DeadlineAnswer> deadlineAnswers = answerService.getDeadlineAnswersByDeadlineDayId(deadlineDayId, page, size, sortBy);
-        return ResponseEntity.ok(deadlineAnswers);
-    }
-
-
     @GetMapping("/shared/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<SharedAnswer> getSharedAnswerById(@PathVariable int id) {
-        SharedAnswer sharedAnswer = answerService.getSharedAnswerById(id)
+    public ResponseEntity<SharedAnswerDTO> getSharedAnswerById(@PathVariable int id) {
+        SharedAnswerDTO sharedAnswerDTO = answerService.getSharedAnswerById(id)
                 .orElseThrow(() -> new NotFoundException("Shared answer with id=" + id + " not found."));
-        return ResponseEntity.ok(sharedAnswer);
+        return ResponseEntity.ok(sharedAnswerDTO);
     }
 
     @GetMapping("/personal/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<PersonalAnswer> getPersonalAnswerById(@PathVariable int id) {
         PersonalAnswer personalAnswer = answerService.getPersonalAnswerById(id)
                 .orElseThrow(() -> new NotFoundException("Personal answer with id=" + id + " not found."));
@@ -171,14 +148,9 @@ public class AnswerController {
     }
 
     @PutMapping("/shared/assign/{userId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<?> assignSharedAnswersToUser(@PathVariable int userId, @RequestBody List<AssignSharedAnswerDTO> assignSharedAnswers){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
 
-        if (authenticatedUserId != userId) {
-            throw new BadRequestException("You are not allowed to assign the Shared Answers to another user.");
-        }
         for (AssignSharedAnswerDTO assignSharedAnswerDTO : assignSharedAnswers) {
             SharedAnswer sharedAnswer = sharedAnswerRepo.findById(assignSharedAnswerDTO.getAnswerId())
                     .orElseThrow(() -> new NotFoundException("SharedAnswer with id=" + assignSharedAnswerDTO.getAnswerId() + " not found."));
@@ -211,15 +183,8 @@ public class AnswerController {
     }
 
     @PostMapping("/users/{userId}/personal")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<Map<String, String>> savePersonalAnswers(@PathVariable int userId, @RequestBody List<PersonalAnswerDTO> personalAnswers) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
-
-        if (authenticatedUserId != userId) {
-            throw new UnauthorizedException("You are not allowed to save personal answers for another user.");
-        }
-
         Map<String, String> response = new HashMap<>();
         try {
             answerService.savePersonalAnswers(personalAnswers);
@@ -232,40 +197,22 @@ public class AnswerController {
     }
 
     @DeleteMapping("/user/shared/{userId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<String> clearUserSharedAnswers(@PathVariable int userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
-        if (authenticatedUserId != userId) {
-            throw new BadRequestException("You are not allowed to clear another user's personal answers.");
-        }
         answerService.clearUserSharedAnswers(userId);
         return ResponseEntity.ok("User's shared answers cleared successfully");
     }
 
     @DeleteMapping("/users/{userId}/personal")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<String> clearUserPersonalAnswers(@PathVariable int userId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
-        if (authenticatedUserId != userId) {
-            throw new BadRequestException("You are not allowed to clear another user's personal answers.");
-        }
         answerService.clearUserPersonalAnswers(userId);
         return ResponseEntity.ok("User's personal answers cleared successfully");
     }
 
-    private void validateBindingResult(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new BadRequestException(bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .reduce("", (s1, s2) -> s1 + s2));
-        }
-    }
-
     @PostMapping("/users/{userId}/checkpoint")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<List<CheckpointAnswerDTO>> saveCheckpointAnswers(@RequestBody List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
+    public ResponseEntity<List<CheckpointAnswerDTO>> saveCheckpointAnswers(@PathVariable int userId, @RequestBody List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
         try {
             List<CheckpointAnswerDTO> savedAnswersDTO = answerService.saveCheckpointAnswers(checkpointAnswerDTOs);
 
@@ -277,8 +224,8 @@ public class AnswerController {
     }
 
     @PostMapping("/users/{userId}/deadline")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<List<DeadlineAnswerDTO>> saveDeadlineAnswers(@RequestBody List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
+    public ResponseEntity<List<DeadlineAnswerDTO>> saveDeadlineAnswers(@PathVariable int userId, @RequestBody List<DeadlineAnswerDTO> deadlineAnswerDTOs) {
         try {
             List<DeadlineAnswerDTO> savedAnswersDTO = answerService.saveDeadlineAnswers(deadlineAnswerDTOs);
             return ResponseEntity.ok(savedAnswersDTO);
@@ -289,7 +236,7 @@ public class AnswerController {
     }
 
     @GetMapping("/users/{userId}/checkpoint/{cdAnswerType}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<List<CheckpointAnswerDTO>> getCheckpointAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
         try{
             List<CheckpointAnswerDTO> checkpointAnswers = answerService.getCheckpointAnswersByTypeAndUserId(cdAnswerType, userId);
@@ -302,7 +249,7 @@ public class AnswerController {
     }
 
     @GetMapping("/users/{userId}/deadline/{cdAnswerType}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<List<DeadlineAnswerDTO>> getDeadlineAnswersByTypeAndUserId(@PathVariable CDAnswerType cdAnswerType, @PathVariable int userId) {
 
         try{
@@ -313,6 +260,14 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(null);
         }
 
+    }
+
+    private void validateBindingResult(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce("", (s1, s2) -> s1 + s2));
+        }
     }
 
 }

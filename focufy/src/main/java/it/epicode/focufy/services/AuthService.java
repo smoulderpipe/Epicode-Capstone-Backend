@@ -1,6 +1,7 @@
 package it.epicode.focufy.services;
 import it.epicode.focufy.dtos.LoginUserDTO;
 import it.epicode.focufy.entities.User;
+import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.exceptions.UnauthorizedException;
 import it.epicode.focufy.security.JwtTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class AuthService {
 
     public String authenticateUserAndCreateToken(LoginUserDTO userRequestBody){
         User user = userService.getUserByEmail(userRequestBody.getEmail());
+
+        if (user == null) {
+            throw new NotFoundException("User not found. Are you sure you typed in the right email address?");
+        }
 
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {
             return jwtTool.createToken(user);

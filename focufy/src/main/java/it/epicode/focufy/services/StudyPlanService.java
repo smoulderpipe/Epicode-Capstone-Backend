@@ -3,6 +3,7 @@ import it.epicode.focufy.dtos.*;
 import it.epicode.focufy.entities.*;
 import it.epicode.focufy.entities.enums.*;
 import it.epicode.focufy.exceptions.NotFoundException;
+import it.epicode.focufy.exceptions.UserAlreadyHasStudyPlanException;
 import it.epicode.focufy.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,10 @@ public class StudyPlanService {
         User user = userRepo.findById(studyPlanDTO.getUserId())
                 .orElseThrow(() -> new NotFoundException("User with id=" + studyPlanDTO.getUserId() + " not found."));
 
+        if (user.getStudyPlan() != null) {
+            throw new UserAlreadyHasStudyPlanException("User with id=" + user.getId() + " already has a study plan.");
+        }
+
         StudyPlan studyPlan = new StudyPlan();
         studyPlan.setUser(user);
         studyPlan.setShortTermGoal(studyPlanDTO.getShortTermGoal());
@@ -100,7 +105,6 @@ public class StudyPlanService {
             }
         }
 
-        // Check if the last day is a Sunday and replace it with a deadline day if necessary
         if (days.get(days.size() - 1) instanceof CheckpointDay) {
             Day checkpointDay = days.remove(days.size() - 1);
             DeadlineDay deadlineDay = new DeadlineDay();
@@ -302,7 +306,7 @@ public class StudyPlanService {
         checkpointDayDTO.setId(checkpointDay.getId());
         checkpointDayDTO.setType("CheckpointDay");
         checkpointDayDTO.setName(checkpointDay.getName());
-        checkpointDayDTO.setDate(checkpointDay.getDate());  // Imposta la data
+        checkpointDayDTO.setDate(checkpointDay.getDate());
         List<Question> questions = checkpointDay.getQuestions();
         if (questions != null) {
             checkpointDayDTO.setQuestions(questions.stream()
@@ -320,7 +324,7 @@ public class StudyPlanService {
         deadlineDayDTO.setId(deadlineDay.getId());
         deadlineDayDTO.setType("DeadlineDay");
         deadlineDayDTO.setName(deadlineDay.getName());
-        deadlineDayDTO.setDate(deadlineDay.getDate());  // Imposta la data
+        deadlineDayDTO.setDate(deadlineDay.getDate());
         List<Question> questions = deadlineDay.getQuestions();
         if (questions != null) {
             deadlineDayDTO.setQuestions(questions.stream()
