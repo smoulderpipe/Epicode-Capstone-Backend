@@ -77,8 +77,16 @@ public class AnswerService {
         return personalAnswerRepo.findById(id);
     }
 
-    public Optional<SharedAnswer> getSharedAnswerById(int id) {
-        return sharedAnswerRepo.findById(id);
+    public Optional<SharedAnswerDTO> getSharedAnswerById(int id) {
+        return sharedAnswerRepo.findById(id).map(this::convertSToDTO);
+    }
+
+    public SharedAnswerDTO convertSToDTO(SharedAnswer sharedAnswer){
+        return new SharedAnswerDTO(
+                sharedAnswer.getId(),
+                sharedAnswer.getSharedAnswerType(),
+                sharedAnswer.getAnswerText()
+        );
     }
 
     public List<SharedAnswer> getSharedAnswersForQuestion(int questionId){
@@ -218,7 +226,7 @@ public class AnswerService {
     }
 
     public SharedAnswer updateSharedAnswer(int id, SharedAnswerDTO answerRequestBody) {
-        Optional<SharedAnswer> answerOptional = getSharedAnswerById(id);
+        Optional<SharedAnswer> answerOptional = sharedAnswerRepo.findById(id);
         if (answerOptional.isPresent()) {
             SharedAnswer answerToUpdate = answerOptional.get();
             populateSharedAnswerFields(answerToUpdate, answerRequestBody);
@@ -245,7 +253,7 @@ public class AnswerService {
 
 
     public String deleteSharedAnswer(int id) {
-        Optional<SharedAnswer> answerOptional = getSharedAnswerById(id);
+        Optional<SharedAnswer> answerOptional = sharedAnswerRepo.findById(id);
         if (answerOptional.isPresent()) {
             SharedAnswer answerToDelete = answerOptional.get();
             sharedAnswerRepo.delete(answerToDelete);
@@ -383,14 +391,16 @@ public class AnswerService {
 
     @Transactional
     public List<CheckpointAnswerDTO> saveCheckpointAnswers(List<CheckpointAnswerDTO> checkpointAnswerDTOs) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
         List<CheckpointAnswerDTO> savedAnswersDTO = new ArrayList<>();
 
         for (CheckpointAnswerDTO dto : checkpointAnswerDTOs) {
             try {
-                User user = userRepo.findById(dto.getUserId())
-                        .orElseThrow(() -> new NotFoundException("User with id=" + dto.getUserId() + " not found."));
+                User user = userRepo.findById(authenticatedUserId)
+                        .orElseThrow(() -> new NotFoundException("User with id=" + authenticatedUserId + " not found."));
 
-                int countAnswers = checkpointAnswerRepo.countByUserIdAndCheckpointDayId(dto.getUserId(), dto.getCheckpointDayId());
+                int countAnswers = checkpointAnswerRepo.countByUserIdAndCheckpointDayId(authenticatedUserId, dto.getCheckpointDayId());
                 if (countAnswers >= 3) {
                     throw new IllegalStateException("Maximum number of checkpoint answers exceeded for this day.");
                 }
@@ -404,21 +414,22 @@ public class AnswerService {
                 user.getCheckpointAnswers().add(checkpointAnswer);
                 checkpointAnswerRepo.save(checkpointAnswer);
 
-                savedAnswersDTO.add(convertCToDTO(checkpointAnswer)); // Converte e aggiunge alla lista di DTO salvate
+                savedAnswersDTO.add(convertCToDTO(checkpointAnswer));
             } catch (NotFoundException e) {
                 System.err.println("Error: " + e.getMessage());
-                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw e;
             } catch (IllegalStateException e) {
                 System.err.println("Error: " + e.getMessage());
-                throw e; // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw e;
             } catch (Exception e) {
                 System.err.println("Unexpected error: " + e.getMessage());
-                throw new RuntimeException("Unexpected error occurred", e); // Gestisci o rilancia l'eccezione a seconda della logica dell'applicazione
+                throw new RuntimeException("Unexpected error occurred", e);
             }
         }
 
         return savedAnswersDTO;
     }
+
 
     private CheckpointAnswerDTO convertCToDTO(CheckpointAnswer checkpointAnswer) {
         CheckpointAnswerDTO dto = new CheckpointAnswerDTO();

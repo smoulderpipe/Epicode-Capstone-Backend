@@ -24,7 +24,7 @@ public class StudyPlanController {
     private StudyPlanService studyPlanService;
 
     @GetMapping("/api/users/{userId}/studyplans")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<StudyPlanResponseDTO> getStudyPlanByUserId(@PathVariable int userId){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -39,7 +39,7 @@ public class StudyPlanController {
     }
 
     @PostMapping("/api/users/{userId}/studyplans")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<StudyPlanResponseDTO> createStudyPlan(@PathVariable int userId, @RequestBody @Validated StudyPlanDTO studyPlanDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
@@ -54,7 +54,7 @@ public class StudyPlanController {
     }
 
     @PostMapping("/api/users/{userId}/addMantras")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<String> addMantrasToStudyPlan(@PathVariable int userId) {
         try {
             studyPlanService.addMantrasToStudyPlanByMantraType(userId);
@@ -66,7 +66,7 @@ public class StudyPlanController {
     }
 
     @DeleteMapping("/api/users/{userId}/studyplans")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<String> deleteStudyPlan(@PathVariable int userId){
         studyPlanService.deleteStudyPlanByUserId(userId);
         return ResponseEntity.ok("Study plan for user with id " + userId + " correctly deleted");

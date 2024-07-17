@@ -41,7 +41,7 @@ public class AvatarController {
     }
 
     @PutMapping("/api/users/{userId}/remove-avatar")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<String> removeAvatarAssignment(@PathVariable int userId) {
 
         avatarService.removeAvatarAssignment(userId);

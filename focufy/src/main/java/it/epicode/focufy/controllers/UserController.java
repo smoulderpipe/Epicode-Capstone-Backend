@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
     public User getUser (@PathVariable int id){
         return userService.getUserById(id).orElseThrow(() -> new NotFoundException("User with id=" + id + " not found."));
     }
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{userId}/avatar")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<Avatar> getUserAvatar(@PathVariable Integer userId) {
         Optional<User> user = userRepo.findById(userId);
         if (user.isPresent()) {
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @PutMapping("/api/users/{id}/long-term-goal")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
     public User updateUserLongTermGoal(@PathVariable int id, @RequestBody @Validated UpdateLongTermGoalDTO longTermGoalDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s + s2)));

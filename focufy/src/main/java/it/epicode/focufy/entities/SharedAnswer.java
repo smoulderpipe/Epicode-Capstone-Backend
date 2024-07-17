@@ -24,7 +24,7 @@ public class SharedAnswer extends Answer{
             joinColumns = @JoinColumn(name = "shared_answer_id"),
             inverseJoinColumns = @JoinColumn(name="user_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private List<User> users;
 
     public List<User> getUsers() {
