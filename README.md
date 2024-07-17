@@ -123,10 +123,8 @@ In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure mod
 - POST **/api/answers/personal/{id}**: Crea una nuova risposta personale.
 - DELETE **/api/answers/personal/{id}**: Elimina una risposta personale.
 - DELETE **/api/answers/users/{userId}/personal**: Elimina tutte le risposte personali di un utente.
-- GET **/api/answers/checkpoint/{checkpointDayId}**: Ottiene le risposte checkpoint di un giorno di tipo checkpoint specifico.
 - GET **/api/answers/users/{userId}/checkpoint/{cdAnswerType}**: Ottiene tutte le risposte checkpoint di un certo tipo inserite da un utente nel proprio piano di studi.
 - POST **/api/answers/users/{userId}/checkpoint**: Crea una nuova risposta di tipo checkpoint.
-- GET **/api/answers/deadline/{deadlineDayId}**: Ottiene le risposte deadline del giorno di tipo deadline.
 - GET **/api/answers/users/{userId}/deadline/{cdAnswerType}**: Ottiene tutte le risposte deadline di un certo tipo inserite da un utente nel proprio piano di studi.
 - POST **/api/answers/users/{userId}/deadline**: Crea una nuova risposta di tipo deadline.
 
