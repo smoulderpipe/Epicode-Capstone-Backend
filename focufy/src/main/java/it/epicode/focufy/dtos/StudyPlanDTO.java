@@ -15,9 +15,9 @@ public class StudyPlanDTO {
     @Setter
     private int userId;
 
-    @NotNull
-    @Min(value = 1)
-    @Max(value = 100)
+    @NotNull(message = "Number of days cannot be null")
+    @Min(value = 1, message = "Number of days cannot be less than 1")
+    @Max(value = 365, message = "Number of days cannot be greater than 365")
     private int numberOfDays;
 
 }
