@@ -110,30 +110,7 @@ public class AnswerService {
         Page<PersonalAnswer> personalAnswerPage = new PageImpl<>(userPersonalAnswers.subList(start, end), pageable, userPersonalAnswers.size());
         return personalAnswerPage;
     }
-    public String savePersonalAnswer(PersonalAnswerDTO personalAnswerDTO) {
-        User user = userRepo.findById(personalAnswerDTO.getUserId())
-                .orElseThrow(() -> new NotFoundException("User with id=" + personalAnswerDTO.getUserId() + " not found."));
 
-        PersonalAnswer personalAnswer = new PersonalAnswer();
-        populatePersonalAnswerFields(personalAnswer, personalAnswerDTO, user);
-
-        if (user.getPersonalAnswers() == null) {
-            user.setPersonalAnswers(new ArrayList<>());
-        }
-        user.getPersonalAnswers().add(personalAnswer);
-
-        personalAnswerRepo.save(personalAnswer);
-
-        if (personalAnswerDTO.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
-            clearUserPersonalAnswers(user.getId());
-            clearUserSharedAnswers(user.getId());
-
-            avatarService.removeAvatarAssignment(user.getId());
-            studyPlanService.deleteStudyPlanByUserId(user.getId());
-        }
-
-        return "Personal answer saved successfully.";
-    }
 
     public String savePersonalAnswers(List<PersonalAnswerDTO> personalAnswerDTOs) {
         for (PersonalAnswerDTO dto : personalAnswerDTOs) {

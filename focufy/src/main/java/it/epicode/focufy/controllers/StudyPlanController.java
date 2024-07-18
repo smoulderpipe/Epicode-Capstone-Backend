@@ -3,6 +3,7 @@ import it.epicode.focufy.dtos.StudyPlanDTO;
 import it.epicode.focufy.dtos.StudyPlanResponseDTO;
 import it.epicode.focufy.entities.StudyPlan;
 import it.epicode.focufy.entities.User;
+import it.epicode.focufy.exceptions.BadRequestException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.exceptions.UnauthorizedException;
 import it.epicode.focufy.exceptions.UserAlreadyHasStudyPlanException;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,7 +43,8 @@ public class StudyPlanController {
 
     @PostMapping("/api/users/{userId}/studyplans")
     @PreAuthorize("#userId == authentication.principal.id or hasAuthority('ADMIN')")
-    public ResponseEntity<StudyPlanResponseDTO> createStudyPlan(@PathVariable int userId, @RequestBody @Validated StudyPlanDTO studyPlanDTO) {
+    public ResponseEntity<StudyPlanResponseDTO> createStudyPlan(@PathVariable int userId, @RequestBody @Validated StudyPlanDTO studyPlanDTO, BindingResult bindingResult) {
+        validateBindingResult(bindingResult);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
 
@@ -75,5 +79,13 @@ public class StudyPlanController {
     @ExceptionHandler(UserAlreadyHasStudyPlanException.class)
     public ResponseEntity<String> handleConflict(UserAlreadyHasStudyPlanException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    private void validateBindingResult(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException(bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .reduce("", (s1, s2) -> s1 + s2));
+        }
     }
 }
