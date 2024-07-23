@@ -44,11 +44,16 @@ public class AuthService {
     @Value("${jwt.duration}")
     private int duration;
 
+    @Transactional
     public String authenticateUserAndCreateToken(LoginUserDTO userRequestBody){
         User user = userService.getUserByEmail(userRequestBody.getEmail());
 
         if (user == null) {
             throw new NotFoundException("User not found. Are you sure you typed in the right email address?");
+        }
+
+        if (!user.isConfirmation()) {
+            throw new UnauthorizedException("Your account is not confirmed. Please check your email to confirm your registration.");
         }
 
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {
@@ -69,13 +74,13 @@ public class AuthService {
         userToSave.setEmail(userRequestBody.getEmail());
         userToSave.setPassword(passwordEncoder.encode(userRequestBody.getPassword()));
         userToSave.setUserRole(UserRole.USER);
-        userToSave.setEnabled(false);
+        userToSave.setConfirmation(false);
         userRepo.save(userToSave);
 
         String token = generateConfirmationToken(userToSave);
         sendConfirmationEmail(userToSave, token);
 
-        return "User registered successfully with token=" + token + ". Please check your email to confirm your registration.";
+        return "User registered successfully. Please check your email to confirm your registration.";
     }
 
     public String generateConfirmationToken(User user) {
@@ -85,8 +90,6 @@ public class AuthService {
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Token valido per 1 giorno
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                 .compact();
-
-        System.out.println("Generated token:" + token);
 
         return token;
     }
@@ -104,7 +107,6 @@ public class AuthService {
 
     public boolean confirmUser(String token) {
         try {
-            System.out.println("Received token: " + token);
             jwtTool.verifyToken(token);
 
             int userId = jwtTool.getIdFromToken(token);
@@ -114,7 +116,7 @@ public class AuthService {
                 return false;
             }
 
-            user.setEnabled(true);
+            user.setConfirmation(true);
             userRepo.save(user);
 
             return true;
