@@ -95,7 +95,7 @@ public class AuthService {
     }
 
     public void sendConfirmationEmail(User user, String token) {
-        String confirmationUrl = "http://localhost:8080/auth/confirm?token=" + token;
+        String confirmationUrl = "http://localhost:4200/confirm-registration?token=" + token;
         String message = "Please click the following link to confirm your registration: " + confirmationUrl;
 
         SimpleMailMessage email = new SimpleMailMessage();

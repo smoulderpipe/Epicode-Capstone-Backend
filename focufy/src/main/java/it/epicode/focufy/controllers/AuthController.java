@@ -8,6 +8,7 @@ import it.epicode.focufy.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -44,13 +45,13 @@ public class AuthController {
     }
 
     @GetMapping("/auth/confirm")
-    public String confirmRegistration(@RequestParam("token") String token) {
+    public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
         boolean success = authService.confirmUser(token);
 
         if (success) {
-            return "Registration confirmed successfully.";
+            return ResponseEntity.ok("Registration confirmed successfully.");
         } else {
-            return "Invalid or expired token.";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
         }
     }
 
