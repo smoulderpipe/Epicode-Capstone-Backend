@@ -8,13 +8,11 @@ import it.epicode.focufy.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +38,21 @@ public class AuthController {
             throw new BadRequestException(bindingResult.getAllErrors().stream()
                     .map(objectError -> objectError.getDefaultMessage()).reduce("", (s, s2) -> s+s2));
         }
-        String resultMessage = userService.saveUser(userRequestBody);
+        String resultMessage = authService.saveUser(userRequestBody);
         Map<String, String> response = new HashMap<>();
         response.put("message", resultMessage);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/auth/confirm")
+    public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
+        boolean success = authService.confirmUser(token);
+
+        if (success) {
+            return ResponseEntity.ok("Registration confirmed successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
+        }
     }
 
     @PostMapping("/auth/login")

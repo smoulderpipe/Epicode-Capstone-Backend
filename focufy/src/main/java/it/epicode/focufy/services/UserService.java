@@ -32,20 +32,6 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-    public String saveUser(CreateUserDTO userRequestBody){
-
-        if(userRepo.existsByEmail(userRequestBody.getEmail())){
-            throw new EmailAlreadyExistsException("Email " + userRequestBody.getEmail() + " is already in use.");
-        }
-        User userToSave = new User();
-        userToSave.setName(userRequestBody.getName());
-        userToSave.setEmail(userRequestBody.getEmail());
-        userToSave.setPassword(passwordEncoder.encode(userRequestBody.getPassword()));
-        userToSave.setUserRole(UserRole.USER);
-        userRepo.save(userToSave);
-        return "User with id=" + userToSave.getId() + " correctly saved.";
-    }
-
     public User updateUser(int id, CreateUserDTO userRequestBody){
         Optional<User> userOptional = getUserById(id);
         if(userOptional.isPresent()){

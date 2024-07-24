@@ -112,6 +112,7 @@ public class AnswerService {
     }
 
 
+    @Transactional
     public String savePersonalAnswers(List<PersonalAnswerDTO> personalAnswerDTOs) {
         for (PersonalAnswerDTO dto : personalAnswerDTOs) {
             User user = userRepo.findById(dto.getUserId())
@@ -129,8 +130,8 @@ public class AnswerService {
             if (dto.getPersonalAnswerType() == PersonalAnswerType.RESTART) {
                 clearUserPersonalAnswers(user.getId());
                 clearUserSharedAnswers(user.getId());
-              clearUserCheckpointAnswers(user.getId());
-              clearUserDeadlineAnswers(user.getId());
+                clearUserCheckpointAnswers(user.getId());
+                clearUserDeadlineAnswers(user.getId());
                 userService.updateUserLongTermGoal(user.getId(), null);
                 avatarService.removeAvatarAssignment(user.getId());
                 studyPlanService.deleteStudyPlanByUserId(user.getId());
@@ -294,18 +295,23 @@ public class AnswerService {
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " not found."));
 
         List<SharedAnswer> sharedAnswersToRemove = user.getSharedAnswers();
-        user.getSharedAnswers().clear();
-        userRepo.save(user);
+        System.out.println("SharedAnswers to remove: " + sharedAnswersToRemove.size());
 
         for (SharedAnswer sharedAnswer : sharedAnswersToRemove) {
             sharedAnswer.getUsers().remove(user);
             sharedAnswerRepo.save(sharedAnswer);
         }
+
+        user.getSharedAnswers().clear();
+        userRepo.save(user);
     }
 
     public void clearUserPersonalAnswers(int userId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int authenticatedUserId = ((User) authentication.getPrincipal()).getId();
+
+        System.out.println("Authenticated User ID: " + authenticatedUserId);
+        System.out.println("User ID from request: " + userId);
 
         if (authenticatedUserId != userId) {
             throw new UnauthorizedException("You are not allowed to clear shared answers for another user.");
