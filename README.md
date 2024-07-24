@@ -24,6 +24,7 @@ Focufy è un&#39;app motivazionale per studenti, pensata per aiutarli a conoscer
     - *spring-boot-starter-validation*: Starter per la validazione.
     - *spring-boot-starter-web*: Starter per le applicazioni web, inclusi RESTful.
     - *spring-boot-starter-test*: Starter per i test.
+    - *spring-boot-starter-mail*: Starter per utilizzare Java Mail e il sistema di invio mail del framework Spring
 - **PostgreSQL**: Database relazionale utilizzato.
 - **Lombok**: Libreria per ridurre il boilerplate code.
 - **JSON Web Tokens (JWT)**: Autenticazione e autorizzazione.
@@ -56,6 +57,8 @@ Aggiungi le configurazioni necessarie nel file *application.properties* nella di
 	cloudinary.cloud-name=tuo_cloud_name
 	cloudinary.api-key=tua_api_key
 	cloudinary.api-secret=tua_api_secret
+ 	spring.mail.username=tua_email
+	spring.mail.password=tua_password
 
 **Compilazione e avvio dell&#39;applicazione con IntelliJ IDEA**
 
@@ -85,6 +88,7 @@ In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure mod
 
 **AUTH**
 - POST **/auth/register**: Registra un nuovo utente.
+- GET **/auth/confirm**: Conferma un utente che si è registrato ed ha cliccato sul link di conferma ricevuto per email.
 - POST **/auth/login**: Effettua il login di un utente.
 - POST **/auth/logout**: Effettua il logout di un utente.
 
