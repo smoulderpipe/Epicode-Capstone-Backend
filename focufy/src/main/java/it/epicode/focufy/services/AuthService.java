@@ -87,7 +87,7 @@ public class AuthService {
         String token = Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Token valido per 1 giorno
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                 .compact();
 
@@ -95,7 +95,7 @@ public class AuthService {
     }
 
     public void sendConfirmationEmail(User user, String token) {
-        String confirmationUrl = "http://localhost:4200/confirm-registration?token=" + token;
+        String confirmationUrl = "https://netlifydeploy--focufy.netlify.app/confirm-registration?token=" + token;
         String message = "Please click the following link to confirm your registration: " + confirmationUrl;
 
         SimpleMailMessage email = new SimpleMailMessage();
