@@ -30,6 +30,11 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(e, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UnconfirmedException.class)
+    public ResponseEntity<Object> handleUnconfirmedException(UnconfirmedException e) {
+        return buildErrorResponse(e, HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<Object> buildErrorResponse(RuntimeException e, HttpStatus status) {
         Error error = new Error();
         error.setMessage(e.getMessage());

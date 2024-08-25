@@ -8,6 +8,7 @@ import it.epicode.focufy.entities.enums.UserRole;
 import it.epicode.focufy.exceptions.EmailAlreadyExistsException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.exceptions.UnauthorizedException;
+import it.epicode.focufy.exceptions.UnconfirmedException;
 import it.epicode.focufy.repositories.UserRepo;
 import it.epicode.focufy.security.JwtTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class AuthService {
         }
 
         if (!user.isConfirmation()) {
-            throw new UnauthorizedException("Your account is not confirmed. Please check your email to confirm your registration.");
+            throw new UnconfirmedException("Your account is not confirmed. Please check your email to confirm your registration.");
         }
 
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {
