@@ -1,8 +1,6 @@
 package it.epicode.focufy.services;
 import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.entities.User;
-import it.epicode.focufy.entities.enums.UserRole;
-import it.epicode.focufy.exceptions.EmailAlreadyExistsException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
