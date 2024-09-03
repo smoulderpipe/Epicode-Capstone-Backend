@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="012aae77-31ce-4e10-a960-35257932921a" name="Changes" comment="" />
+    <list default="true" id="012aae77-31ce-4e10-a960-35257932921a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_08_2024_15_25__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_08_2024_15_25__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_08_2024_15_29__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_19_08_2024_15_29__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/java/it/epicode/focufy/services/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/focufy/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/focufy/src/main/resources/application.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,9 +51,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;koyebDeploy&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;localAppImproved&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/delvp/Documents/EpicodeExercises/Epicode-Capstone-Backend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/delvp/Documents/EpicodeExercises/Epicode-Capstone-Backend/focufy&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
   }
 }</component>

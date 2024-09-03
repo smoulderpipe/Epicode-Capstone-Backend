@@ -3,13 +3,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.dtos.LoginUserDTO;
+import it.epicode.focufy.dtos.SendNewPasswordDTO;
 import it.epicode.focufy.entities.User;
 import it.epicode.focufy.entities.enums.UserRole;
 import it.epicode.focufy.exceptions.EmailAlreadyExistsException;
 import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.exceptions.UnauthorizedException;
+import it.epicode.focufy.exceptions.UnconfirmedException;
 import it.epicode.focufy.repositories.UserRepo;
 import it.epicode.focufy.security.JwtTool;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -53,7 +57,7 @@ public class AuthService {
         }
 
         if (!user.isConfirmation()) {
-            throw new UnauthorizedException("Your account is not confirmed. Please check your email to confirm your registration.");
+            throw new UnconfirmedException("Your account is not confirmed. Please check your email to confirm your registration.");
         }
 
         if(passwordEncoder.matches(userRequestBody.getPassword(), user.getPassword())) {
@@ -124,4 +128,33 @@ public class AuthService {
             return false;
         }
     }
+
+    public String generateRandomPassword(int length) {
+        return RandomStringUtils.randomAlphanumeric(length);
+    }
+
+    public void requestNewPassword (SendNewPasswordDTO sendNewPasswordDTO) {
+        Optional<User> userOptional = userRepo.findByEmail(sendNewPasswordDTO.getEmail());
+        if(userOptional.isPresent()){
+            User userToUpdate = userOptional.get();
+            String newPassword = generateRandomPassword(10);
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+
+            userToUpdate.setPassword(encryptedPassword);
+            userRepo.save(userToUpdate);
+            sendNewPasswordEmail(userToUpdate.getEmail(), newPassword);
+        } else {
+            throw new NotFoundException("User with email=" + sendNewPasswordDTO.getEmail() + " not found.");
+        }
+    }
+
+    public void sendNewPasswordEmail (String email, String newPassword) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("FOCUFY APP - Your new password");
+        mailMessage.setText("Your new password is: " + newPassword);
+
+        javaMailSender.send(mailMessage);
+    }
+
 }
