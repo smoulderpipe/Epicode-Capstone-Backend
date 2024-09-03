@@ -50,7 +50,7 @@ public class AppConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://netlifydeploy--focufy.netlify.app"));
+        corsConfig.setAllowedOrigins(Arrays.asList("https://netlifydeploy--focufy.netlify.app"));
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfig.setExposedHeaders(Arrays.asList("Authorization"));

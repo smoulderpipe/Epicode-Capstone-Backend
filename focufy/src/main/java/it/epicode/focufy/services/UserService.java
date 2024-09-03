@@ -32,19 +32,6 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-//    public User updateUser(int id, CreateUserDTO userRequestBody){
-//        Optional<User> userOptional = getUserById(id);
-//        if(userOptional.isPresent()){
-//            User userToUpdate = userOptional.get();
-//            userToUpdate.setName(userRequestBody.getName());
-//            userToUpdate.setEmail(userRequestBody.getEmail());
-//            userToUpdate.setPassword(passwordEncoder.encode(userRequestBody.getPassword()));
-//            return userRepo.save(userToUpdate);
-//        } else {
-//            throw new NotFoundException("User with id=" + id + " not found.");
-//        }
-//    }
-
     public User updateUserNameOrPassword(int id, UpdateUserNameOrPasswordDTO userRequestBody) {
         Optional<User> userOptional = getUserById(id);
         if (userOptional.isPresent()) {
