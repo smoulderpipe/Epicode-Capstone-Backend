@@ -1,6 +1,6 @@
 package it.epicode.focufy.controllers;
-import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.dtos.UpdateLongTermGoalDTO;
+import it.epicode.focufy.dtos.UpdateUserNameOrPasswordDTO;
 import it.epicode.focufy.entities.Avatar;
 import it.epicode.focufy.entities.CheckpointAnswer;
 import it.epicode.focufy.entities.DeadlineAnswer;
@@ -47,12 +47,12 @@ public class UserController {
     }
 
     @PutMapping("/api/users/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public User editUser(@PathVariable int id, @RequestBody @Validated CreateUserDTO userRequestBody, BindingResult bindingResult){
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
+    public User editUser(@PathVariable int id, @RequestBody @Validated UpdateUserNameOrPasswordDTO userRequestBody, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new BadRequestException(bindingResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).reduce("", ((s, s2) -> s+s2)));
         }
-        return userService.updateUser(id, userRequestBody);
+        return userService.updateUserNameOrPassword(id, userRequestBody);
     }
 
     @DeleteMapping("/api/users/{id}")

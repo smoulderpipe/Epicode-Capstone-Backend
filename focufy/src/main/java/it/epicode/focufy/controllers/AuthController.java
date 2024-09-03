@@ -2,7 +2,9 @@ package it.epicode.focufy.controllers;
 
 import it.epicode.focufy.dtos.CreateUserDTO;
 import it.epicode.focufy.dtos.LoginUserDTO;
+import it.epicode.focufy.dtos.SendNewPasswordDTO;
 import it.epicode.focufy.exceptions.BadRequestException;
+import it.epicode.focufy.exceptions.NotFoundException;
 import it.epicode.focufy.services.AuthService;
 import it.epicode.focufy.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,6 +64,22 @@ public class AuthController {
                     .reduce("", (s, s2) -> s+s2));
         }
         return authService.authenticateUserAndCreateToken(userRequestBody);
+    }
+
+    @PostMapping("/auth/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody @Validated SendNewPasswordDTO sendNewPasswordDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new BadRequestException(bindingResult.getAllErrors().stream().map(error->error.getDefaultMessage())
+                    .reduce("", (s, s2) -> s+s2));
+        };
+        try {
+            authService.requestNewPassword(sendNewPasswordDTO);
+            return ResponseEntity.ok("A new password has been sent to your email");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An unexpected error occured. Please try again later.");
+        }
     }
 
 }

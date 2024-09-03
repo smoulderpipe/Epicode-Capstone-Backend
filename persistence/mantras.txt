@@ -1,28 +1,28 @@
-DISTRACTION;When distractions arise, acknowledge them, but don't let them derail your focus. Gently bring your attention back to the task at hand.
-DISTRACTION;Remember, your focus is your power, distractions are just temporary hurdles.
-DISTRACTION;When you feel distracted, close your eyes and imagine the feeling of having achieved your goals. This will help you stay focused on the present.
-DISTRACTION;Embrace the power of silence. Find a quiet space free from distractions where you can fully immerse yourself in your studies.
-DISTRACTION;When you feel overwhelmed by distractions, seek out a quiet place where you can regain your focus.
-DISTRACTION;Remember your 'why'. Remind yourself of the reasons why you're pursuing your studies. Reconnecting with your purpose will drive your attention to the right place.
-DISTRACTION;Mindfulness cultivates mental clarity and reduces stress, enhancing your ability to focus.
-BOREDOM;Knowledge is power, and fun is the fuel. Learning should be both enriching and enjoyable. Find ways to make your studies intrinsically rewarding.
-BOREDOM;Method + madness = magic. Combine your meticulous approach with a touch of spontaneity. Explore new learning methods and ignite your spark.
-BOREDOM;Challenge yourself. Encourage exploration and a touch of fun within the structured learning process. Embrace the thrill of conquering new learning frontiers.
-BOREDOM;Remember, learning should be a journey, not a race. Enjoy the process and embrace the joy of discovery.
-BOREDOM;Infuse your studies with creativity. Find artistic or expressive ways to engage with your learning material.
-BOREDOM;Ditch the drill and embrace the thrill. Don't be a slave to routine. Once in a while, break free from rigid schedules.
-BOREDOM;Embrace the unexpected. Step out of your comfort zone and discover new things that make you feel happy and creative.
-OVERTHINKING;Don't get lost in analysis paralysis. Take action, learn from your experiences, and adapt as you go.
-OVERTHINKING;Don't let fear of failure hold you back. Embrace the challenges and learn from your mistakes.
-OVERTHINKING;Silence excessive critism. Don't let negative thoughts hinder your progress.
-OVERTHINKING;Focus on the present moment. Don't dwell on the past or worry about the future, focus on what you're doing now.
-OVERTHINKING;Trust your gut feeling. Don't overanalyze every decision, let your intuition guide you.
-OVERTHINKING;Keep things simple. Sometimes the simplest approach is the most effective.
-OVERTHINKING;Overthinking leads to procrastination. Take action, learn from doing, and refine as you go.
-BURNOUT;Don't let studies consume your life. Maintain a healthy balance between learning and other aspects of your life.
-BURNOUT;You are more important than your achievements. Nurture your relationships, pursue hobbies, and explore your passions.
-BURNOUT;Schedule time for relaxation. Don't burn the midnight oil every night, give your mind time to rest and recharge.
-BURNOUT;Learn to say no. Don't overload yourself with commitments, prioritize your well-being and studies.
-BURNOUT;Find healthy ways to cope with stress. Exercise, meditation, or spending time in nature can be beneficial.
-BURNOUT;Listen to your body. If you feel overwhelmed or exhausted, take a break and come back to your studies with fresh energy.
-BURNOUT;Read a book that sparks your imagination. Get lost for a while in a fictional world and let your mind wander, before diving back to your studies.
+DISTRACTION;When distractions pop up, notice them, but don’t let them knock you off course. Gently refocus on what you’re doing.
+DISTRACTION;Keep in mind, your focus is your superpower. Distractions are just little bumps in the road.
+DISTRACTION;Feeling distracted? Close your eyes and picture the rush of smashing your goals. It'll help you stay locked into the present.
+DISTRACTION;Embrace the power of silence. Find a quiet spot where you can dive deep into your studies without any interruptions.
+DISTRACTION;When distractions are taking over, escape to a quiet place to get your focus back on track.
+DISTRACTION;Don’t forget your ‘why.’ Remind yourself why you’re in this game. Reconnecting with your purpose will keep your attention right where it needs to be.
+DISTRACTION;Being mindful clears your head and cuts down on stress, making it easier to focus.
+BOREDOM;Knowledge is power, but fun is the fuel. Learning should be a blast. Find ways to make your studies something you actually want to do.
+BOREDOM;Method + madness = magic. Mix your structured approach with a bit of spontaneity. Try new learning hacks and reignite your spark.
+BOREDOM;Push yourself. Make room for exploration and fun in your learning routine. Embrace the buzz of cracking new challenges.
+BOREDOM;Learning’s a journey, not a race. Enjoy the ride and embrace the joy of discovering new stuff.
+BOREDOM;Get creative with your studies. Find fun, artistic ways to dive into your learning material.
+BOREDOM;Ditch the grind and embrace the thrill. Don’t be chained to routine. Break out of your schedule now and then.
+BOREDOM;Welcome the unexpected. Step out of your comfort zone and find new things that light you up.
+OVERTHINKING;Don’t get stuck in analysis paralysis. Take action, learn on the fly, and adjust as needed.
+OVERTHINKING;Don’t let fear of failure stop you. Embrace the challenges and learn from your slip-ups.
+OVERTHINKING;Mute the self-criticism. Don’t let negative thoughts slow you down.
+OVERTHINKING;Stay in the moment. Forget the past and quit stressing about the future. Focus on what you’re doing right now.
+OVERTHINKING;Trust your gut. Stop overthinking every decision. Let your instincts take the lead.
+OVERTHINKING;Keep it simple. Sometimes the easiest way is the best way.
+OVERTHINKING;Overthinking = procrastination. Take action, learn by doing, and tweak as you go.
+BURNOUT;Don’t let studying take over your life. Keep a healthy balance between learning and everything else.
+BURNOUT;You’re more than just your achievements. Spend time with people you care about, chase hobbies, and explore what you love.
+BURNOUT;Make time to relax. Don’t burn the midnight oil every night. Let your mind rest and recharge.
+BURNOUT;Learn to say no. Don’t pile on too much. Put your well-being and studies first.
+BURNOUT;Find healthy ways to handle stress. Try exercise, meditation, or just chilling in nature.
+BURNOUT;Listen to your body. If you’re feeling wiped out, take a break and come back with fresh energy.
+BURNOUT;Grab a book that fires up your imagination. Get lost in a story and let your mind wander, then jump back into your studies refreshed.
