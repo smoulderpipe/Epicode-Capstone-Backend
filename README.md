@@ -75,7 +75,7 @@ Aggiungi le configurazioni necessarie nel file *application.properties* nella di
 
 Il server sarà disponibile all&#39;indirizzo http://localhost:8080.
 
-In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure modificare il file AppConfig dentro src/main/java/it.epicode.focufy/config, come descritto nel paragrafo precedente.
+In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure modificare il file *AppConfig.java* dentro *src/main/java/it.epicode.focufy/config*, come descritto nel paragrafo precedente.
 ## 📂 Struttura del Progetto
 
    - **src/main/java**: Contiene il codice sorgente dell&#39;applicazione.
