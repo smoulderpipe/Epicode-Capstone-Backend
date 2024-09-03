@@ -8,12 +8,12 @@ Per la parte frontend del progetto, fare riferimento a questa repository: [Epico
 Focufy è un&#39;app motivazionale per studenti, pensata per aiutarli a conoscere meglio se stessi e a pianificare routine di studio in linea con i propri bisogni.
 ## ✨ Funzionalità Principali
 
-- **Gestione utenti**: Registrazione, autenticazione e gestione degli utenti.
-- **Test abitudini, personalità e obiettivi**: Sistema di domande e risposte necessario alla costruzione del profilo dell&#39;utente.
-- **Assegnazione avatar**: Assegnazione avatar specifico in base alle abitudini e alla personalità dell&#39;utente.
-- **Creazione e gestione del piano di studio**: Costruzione di un calendario personalizzato in linea con l&#39;avatar e gli obiettivi dell&#39;utente, con sessioni di attività, mantra quotidiani, checkpoint settimanali e deadline.
+- **Gestione utenti**: Registrazione, conferma via mail, autenticazione, recupero e modifica credenziali, gestione degli utenti.
+- **Questionario abitudini, personalità e obiettivi**: Sistema di domande e risposte finalizzato alla costruzione e gestione del piano di studi dell'utente.
+- **Configurazione avatar**: Configurazione dell’avatar da assegnare all’utente, in base alle risposte riguardanti abitudini e personalità.
+- **Creazione e gestione del piano di studio**: Configurazione di un calendario personalizzato in base all'avatar e agli obiettivi dell'utente, con sessioni di attività, mantra quotidiani, checkpoint settimanali e deadline.
 - **Test autovalutativi**: Sistema prelievo e salvataggio domande e risposte di tipo checkpoint e deadline (necessario all&#39;elaborazione delle statistiche dell&#39;utente in frontend).
-- **Funzioni di reset**: Sistema per l&#39;eliminazione selettiva dei dati personali (per permettere agli utenti di ricominciare da capo l&#39;esperienza, dando risposte diverse).
+- **Funzioni di reset**: Sistema per l'eliminazione selettiva dei dati personali (per permettere agli utenti di ricominciare da capo l'esperienza, dando risposte diverse al questionario iniziale).
 
 ## 🛠️ Tecnologie Utilizzate
 
@@ -50,15 +50,21 @@ Assicurati di avere un&#39;istanza di PostgreSQL in esecuzione e crea un databas
 
 Aggiungi le configurazioni necessarie nel file *application.properties* nella directory *src/main/resources*:
 
-	spring.datasource.username=tuo_username
+	spring.datasource.url=jdbc:postgresql://localhost:numero_porta/nome_database (es. jdbc:postgresql://localhost:5432/focufy)
+ 	spring.datasource.username=tuo_username
 	spring.datasource.password=tua_password
 	jwt.secret=tua_jwt_secret
 	jwt.duration=tua_jwt_duration
 	cloudinary.cloud-name=tuo_cloud_name
 	cloudinary.api-key=tua_api_key
 	cloudinary.api-secret=tua_api_secret
- 	spring.mail.username=tua_email
-	spring.mail.password=tua_password
+ 	spring.mail.username=tua_smtp_gmail_email
+	spring.mail.password=tua_smtp_gmail_password
+
+ Modifica il file *AppConfig.java* nella directory *src/main/java/it.epicode.focufy/config*, sostituendo *“https://netlifydeploy--focufy.netlify.app”* con *“https://localhost:4200”*.
+
+ Modifica il file *AuthService.java* nella directory *src/main/java/it.epicode.focufy/services*, sostituendo *“https://netlifydeploy--focufy.netlify.app/confirm-registration?token=”* con *“https://localhost:4200/confirm-registration?token=”* 
+
 
 **Compilazione e avvio dell&#39;applicazione con IntelliJ IDEA**
 
@@ -69,7 +75,7 @@ Aggiungi le configurazioni necessarie nel file *application.properties* nella di
 
 Il server sarà disponibile all&#39;indirizzo http://localhost:8080.
 
-In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure modificare il file AppConfig dentro src/main/java/it.epicode.focufy/config.
+In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure modificare il file AppConfig dentro src/main/java/it.epicode.focufy/config, come descritto nel paragrafo precedente.
 ## 📂 Struttura del Progetto
 
    - **src/main/java**: Contiene il codice sorgente dell&#39;applicazione.
@@ -91,6 +97,7 @@ In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure mod
 - GET **/auth/confirm**: Conferma un utente che si è registrato ed ha cliccato sul link di conferma ricevuto per email.
 - POST **/auth/login**: Effettua il login di un utente.
 - POST **/auth/logout**: Effettua il logout di un utente.
+- POST **/auth/forgot-password**: Invia una nuova password per e-mail.
 
 **USER CONTROLLER**
 - GET **/api/users**: Ottiene una lista di tutti gli utenti.
@@ -158,6 +165,9 @@ In frontend bisogna utilizzare la porta 4200 (http://localhost:4200), oppure mod
 - POST **/api/users/{userId}/studyplans**: Crea un nuovo piano di studio per uno specifico utente.
 - POST **/api/users/{userId}/addMantras**: Aggiunge i mantra al piano di studio di un utente specifico.
 - DELETE **/api/users/{userId}/studyplans**: Elimina un piano di studio di un utente specifico.
+
+**HEALTH**
+- GET **/health**: Controlla se il backend è online e funzionante.
 
 ## 📋 Popolamento Database
 
