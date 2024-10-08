@@ -17,7 +17,7 @@ Focufy è un&#39;app motivazionale per studenti, pensata per aiutarli a conoscer
 
 ## 🛠️ Tecnologie Utilizzate
 
-- **Java 22**: Linguaggio di programmazione utilizzato.
+- **Java 17**: Linguaggio di programmazione utilizzato.
 - **Spring Boot 3.3.0**: Framework per lo sviluppo di applicazioni Java.
     - *spring-boot-starter-data-jpa*: Starter per JPA e Hibernate.
     - *spring-boot-starter-security*: Starter per la sicurezza dell'applicazione.
